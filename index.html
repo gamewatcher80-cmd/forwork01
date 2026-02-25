@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>邦邦2 - 游戏运营分析原型 v1</title>
+  <style>
+    :root {
+      --bg-main: #f3f5f7;
+      --bg-panel: #ffffff;
+      --bg-header: #151823;
+      --bg-sidebar: #1f2430;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.08);
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --border-soft: #e5e7eb;
+      --radius-lg: 10px;
+      --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      height: 100vh;
+    }
+
+    /* 顶部栏 */
+    .header {
+      grid-area: header;
+      background: var(--bg-header);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-title-main {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .header-title-sub {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .header-right {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* 侧边栏 */
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--bg-sidebar);
+      color: #d1d5db;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 10px 16px;
+      border-right: 1px solid rgba(55, 65, 81, 0.7);
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      margin: 12px 8px 6px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 4px;
+    }
+
+    .sidebar-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: background 0.15s ease, color 0.15s ease;
+      font-size: 13px;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(55, 65, 81, 0.8);
+    }
+
+    .sidebar-item.active {
+      background: rgba(31, 41, 55, 0.95);
+      color: #e5e7eb;
+      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.4);
+    }
+
+    .sidebar-item-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-item-name {
+      font-weight: 500;
+    }
+
+    .sidebar-item-tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #bfdbfe;
+    }
+
+    .sidebar-item-desc {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: #6b7280;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px dashed rgba(75, 85, 99, 0.8);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    /* 主体 */
+    .main {
+      grid-area: main;
+      padding: 14px 18px 16px;
+      overflow: auto;
+    }
+
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .filter-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+      font-size: 12px;
+    }
+
+    .filter-control select,
+    .filter-control input {
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      outline: none;
+      color: var(--text-main);
+      min-width: 90px;
+    }
+
+    .filter-chip {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      font-size: 11px;
+      color: #1d4ed8;
+    }
+
+    /* 面板容器 */
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title-tag {
+      font-size: 11px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .panel-right-actions {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .btn-ghost {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .btn-ghost:hover {
+      border-color: #cbd5f5;
+      color: #4b5563;
+    }
+
+    .btn-primary-soft {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      cursor: pointer;
+      font-size: 11px;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary-soft:hover {
+      filter: brightness(1.05);
+    }
+
+    /* 指标卡 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-card {
+      background: var(--bg-panel);
+      border-radius: var(--radius-lg);
+      padding: 10px 12px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-main {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .kpi-unit {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .kpi-trend {
+      font-size: 11px;
+      color: #16a34a;
+    }
+
+    .kpi-trend.down {
+      color: #dc2626;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* 图表 / 表格占位 */
+    .block-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .block-full {
+      margin-top: 8px;
+    }
+
+    .card-block {
+      background: var(--bg-panel);
+      border-radius: var(--radius-lg);
+      padding: 10px 12px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-block-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .card-block-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .card-block-tags {
+      display: flex;
+      gap: 6px;
+      font-size: 10px;
+    }
+
+    .tag {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      color: #6b7280;
+    }
+
+    .tag-primary {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .chart-placeholder {
+      margin-top: 6px;
+      flex: 1;
+      min-height: 190px;
+      border-radius: 8px;
+      border: 1px dashed #d1d5db;
+      background: repeating-linear-gradient(
+        -45deg,
+        #f9fafb,
+        #f9fafb 8px,
+        #f3f4f6 8px,
+        #f3f4f6 16px
+      );
+      position: relative;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .table-placeholder {
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 6px;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .table-header-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+      gap: 4px;
+      padding: 4px 2px;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    .table-data-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+      gap: 4px;
+      padding: 3px 2px;
+      border-bottom: 1px dashed #e5e7eb;
+    }
+
+    .table-footnote {
+      margin-top: 4px;
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    /* 小 Tab（如周报 / 月报） */
+    .mini-tabs {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 2px;
+      font-size: 11px;
+    }
+
+    .mini-tab {
+      padding: 2px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .mini-tab.active {
+      background: white;
+      color: #1d4ed8;
+      box-shadow: 0 1px 3px rgba(148, 163, 184, 0.5);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 响应式 */
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .block-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 56px auto 1fr;
+        grid-template-areas:
+          "header"
+          "sidebar"
+          "main";
+      }
+
+      .sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 6px;
+      }
+
+      .sidebar-menu {
+        display: flex;
+        gap: 6px;
+      }
+
+      .sidebar-item {
+        min-width: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <!-- 顶部 -->
+  <header class="header">
+    <div class="header-left">
+      <div class="product-badge">邦2</div>
+      <div class="header-title">
+        <div class="header-title-main">邦邦2 - 游戏运营分析看板（原型 v1）</div>
+        <div class="header-title-sub">参考数数面板布局 · 静态原型 · 待接入真实数据</div>
+      </div>
+    </div>
+    <div class="header-right">
+      查看结构是否合理，后续再按需增删图表
+    </div>
+  </header>
+
+  <!-- 左侧导航 -->
+  <aside class="sidebar">
+    <div class="sidebar-section-title">分析页面</div>
+    <ul class="sidebar-menu" id="sidebarMenu">
+      <li class="sidebar-item active" data-panel="realtime">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">实时数据</span>
+          <span class="sidebar-item-tag">在线 / 新增 / 活跃</span>
+        </div>
+        <div class="sidebar-item-desc">对应：实时角色在线 / 实时新增 / 实时活跃</div>
+      </li>
+      <li class="sidebar-item" data-panel="period">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">每日数据-日报</span>
+          <span class="sidebar-item-tag">日粒度</span>
+        </div>
+        <div class="sidebar-item-desc">对应：每日数据日报（账号 / 设备 / 角色）</div>
+      </li>
+      <li class="sidebar-item" data-panel="period">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">每周数据-周报</span>
+          <span class="sidebar-item-tag">周粒度</span>
+        </div>
+        <div class="sidebar-item-desc">对应：周数据-周报（账号 / 设备 / 角色）</div>
+      </li>
+      <li class="sidebar-item" data-panel="period">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">每月数据-月报</span>
+          <span class="sidebar-item-tag">月粒度</span>
+        </div>
+        <div class="sidebar-item-desc">对应：月数据-月报（账号 / 设备 / 角色）</div>
+      </li>
+      <li class="sidebar-item" data-panel="retention">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">回流用户</span>
+          <span class="sidebar-item-tag">回流表现</span>
+        </div>
+        <div class="sidebar-item-desc">对应：回流用户留存 / 回流 Ltv / 回流付费</div>
+      </li>
+      <li class="sidebar-item" data-panel="funnel">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">转化率漏斗</span>
+          <span class="sidebar-item-tag">创角前后 & 投放</span>
+        </div>
+        <div class="sidebar-item-desc">对应：创角前 / 创角后 / 投放转化漏斗</div>
+      </li>
+      <li class="sidebar-item" data-panel="retention">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">留存</span>
+          <span class="sidebar-item-tag">新增留存</span>
+        </div>
+        <div class="sidebar-item-desc">对应：每日新增用户留存（账号 / 设备 / 角色）</div>
+      </li>
+      <li class="sidebar-item" data-panel="retention">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">Ltv</span>
+          <span class="sidebar-item-tag">价值曲线</span>
+        </div>
+        <div class="sidebar-item-desc">对应：每日新增 / 回流用户 Ltv 分析</div>
+      </li>
+      <li class="sidebar-item" data-panel="pay">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">付费数据</span>
+          <span class="sidebar-item-tag">收入相关</span>
+        </div>
+        <div class="sidebar-item-desc">对应：付费整体 / 商品 / 首充 / 广告收入</div>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      本文件仅为静态页面原型：
+      <br>· 用于和产品 / 运营 / 数据侧对齐需求
+      <br>· 对应的数数组件和口径可单独文档说明
+    </div>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main">
+    <!-- 通用筛选条（示意） -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <span>时间范围</span>
+        <div class="filter-control">
+          <input type="text" value="近 7 天" />
+          <span class="filter-chip">支持：单日 / 区间 / 周 / 月</span>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span>服务器</span>
+        <div class="filter-control">
+          <select>
+            <option>全部服务器</option>
+            <option>国服 - 大区1</option>
+            <option>国服 - 大区2</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span>终端</span>
+        <div class="filter-control">
+          <select>
+            <option>全部终端</option>
+            <option>Android</option>
+            <option>iOS</option>
+            <option>特殊包</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span>国家 / 地区</span>
+        <div class="filter-control">
+          <select>
+            <option>全部</option>
+            <option>中国</option>
+            <option>美国</option>
+            <option>日本</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span>渠道 / 投放来源（预留）</span>
+        <div class="filter-control">
+          <select>
+            <option>全部</option>
+            <option>自然量</option>
+            <option>广告投放</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面板1：实时监控 -->
+    <section class="panel active" id="panel-realtime">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>实时监控（账号 / 角色 / 设备）</span>
+            <span class="panel-title-tag">对应：实时角色在线 / 实时新增 / 实时活跃</span>
+          </div>
+          <div class="panel-subtitle">
+            关注当日分小时的在线、新增、活跃与基础付费表现，用于游戏开服节奏监控和异常波动排查，可按服务器 / 终端 / 国家维度细分。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+          <button class="btn-ghost">导出当前视图</button>
+          <button class="btn-primary-soft">作为数数模板参考</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>当前在线人数（账号）</span>
+            <span class="filter-chip">实时</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">12,345</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较昨日同一时刻</span>
+            <span class="kpi-trend">+8.2%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>今日实时新增账号</span>
+            <span class="filter-chip">账号</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">3,210</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>预计全天</span>
+            <span class="kpi-trend down">-3.4%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>今日实时活跃账号</span>
+            <span class="filter-chip">账号</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">18,900</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>活跃占新增</span>
+            <span>≈ 5.9 倍</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>今日实时付费金额</span>
+            <span class="filter-chip">预留</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥56,780</span>
+          </div>
+          <div class="kpi-sub">
+            <span>付费人数：1,230</span>
+            <span>ARPPU：￥46.1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">分小时在线趋势（账号 / 角色）</div>
+              <div class="card-block-sub">对应：实时角色在线-分小时数据；按小时查看各大区 / 终端 / 国家在线曲线，用于发现峰值与异常低谷。</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">折线图</span>
+              <span class="tag">小时 × 人数</span>
+            </div>
+          </div>
+          <div class="chart-placeholder" style="padding: 10px;">
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+              分小时在线人数趋势
+            </div>
+            <div style="width: 100%; height: 160px; position: relative; border-left: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
+              <!-- 网格线 -->
+              <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              
+              <!-- 折线图（带数据点和渐变填充） -->
+              <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+                <!-- 定义渐变填充 -->
+                <defs>
+                  <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+                  </linearGradient>
+                </defs>
+                <!-- 填充区域 -->
+                <polygon points="4.2%,60% 12.5%,55% 20.8%,50% 29.2%,45% 37.5%,40% 45.8%,35% 54.2%,30% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55% 95.8%,100% 4.2%,100%"
+                         fill="url(#lineGradient1)" stroke="none"/>
+                <!-- 折线 -->
+                <polyline points="4.2%,60% 12.5%,55% 20.8%,50% 29.2%,45% 37.5%,40% 45.8%,35% 54.2%,30% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55%"
+                          fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- 数据点 -->
+                <circle cx="4.2%" cy="60%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="12.5%" cy="55%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="20.8%" cy="50%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="29.2%" cy="45%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="37.5%" cy="40%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="45.8%" cy="35%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="54.2%" cy="30%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="62.5%" cy="35%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="70.8%" cy="40%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="79.2%" cy="45%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="87.5%" cy="50%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <circle cx="95.8%" cy="55%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
+                <!-- 数据点悬停效果 -->
+                <circle cx="4.2%" cy="60%" r="8" fill="transparent" stroke="#3b82f6" stroke-width="1" opacity="0.5">
+                  <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9ca3af;">
+              <span>00:00</span>
+              <span>04:00</span>
+              <span>08:00</span>
+              <span>12:00</span>
+              <span>16:00</span>
+              <span>20:00</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">分小时新增 & 活跃趋势</div>
+              <div class="card-block-sub">对应：实时新增 / 活跃数据；按小时对比新增拉新与活跃留存，判断拉新质量与活跃结构。</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">双折线</span>
+              <span class="tag">新增 vs 活跃</span>
+            </div>
+          </div>
+          <div class="chart-placeholder" style="padding: 10px;">
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+              分小时新增 & 活跃账号数
+            </div>
+            <div style="width: 100%; height: 160px; position: relative; border-left: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
+              <!-- 网格线 -->
+              <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
+              
+              <!-- 折线（带渐变填充） -->
+              <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+                <!-- 定义渐变填充 -->
+                <defs>
+                  <linearGradient id="lineGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#16a34a;stop-opacity:0.25" />
+                    <stop offset="100%" style="stop-color:#16a34a;stop-opacity:0" />
+                  </linearGradient>
+                  <linearGradient id="lineGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.25" />
+                    <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0" />
+                  </linearGradient>
+                </defs>
+                <!-- 新增账号数填充区域 -->
+                <polygon points="4.2%,70% 12.5%,65% 20.8%,55% 29.2%,60% 37.5%,50% 45.8%,45% 54.2%,40% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55% 95.8%,100% 4.2%,100%"
+                         fill="url(#lineGradient2)" stroke="none"/>
+                <!-- 活跃账号数填充区域 -->
+                <polygon points="4.2%,50% 12.5%,45% 20.8%,35% 29.2%,30% 37.5%,20% 45.8%,15% 54.2%,10% 62.5%,5% 70.8%,10% 79.2%,15% 87.5%,20% 95.8%,25% 95.8%,100% 4.2%,100%"
+                         fill="url(#lineGradient3)" stroke="none"/>
+                <!-- 新增账号数折线 -->
+                <polyline points="4.2%,70% 12.5%,65% 20.8%,55% 29.2%,60% 37.5%,50% 45.8%,45% 54.2%,40% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55%"
+                          fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- 活跃账号数折线 -->
+                <polyline points="4.2%,50% 12.5%,45% 20.8%,35% 29.2%,30% 37.5%,20% 45.8%,15% 54.2%,10% 62.5%,5% 70.8%,10% 79.2%,15% 87.5%,20% 95.8%,25%"
+                          fill="none" stroke="#ec4899" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- 新增数据点（带白色边框） -->
+                <circle cx="4.2%" cy="70%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="12.5%" cy="65%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="20.8%" cy="55%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="29.2%" cy="60%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="37.5%" cy="50%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="45.8%" cy="45%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="54.2%" cy="40%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="62.5%" cy="35%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="70.8%" cy="40%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="79.2%" cy="45%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="87.5%" cy="50%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <circle cx="95.8%" cy="55%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
+                <!-- 活跃数据点（带白色边框） -->
+                <circle cx="4.2%" cy="50%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="12.5%" cy="45%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="20.8%" cy="35%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="29.2%" cy="30%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="37.5%" cy="20%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="45.8%" cy="15%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="54.2%" cy="10%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="62.5%" cy="5%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="70.8%" cy="10%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="79.2%" cy="15%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="87.5%" cy="20%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+                <circle cx="95.8%" cy="25%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
+              </svg>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9ca3af;">
+              <span>00:00</span>
+              <span>04:00</span>
+              <span>08:00</span>
+              <span>12:00</span>
+              <span>16:00</span>
+              <span>20:00</span>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: flex-start; margin-top: 10px; font-size: 10px; color: #9ca3af;">
+              <span style="display: inline-block; width: 20px; height: 2px; background: #16a34a; margin-right: 5px; vertical-align: middle;"></span>
+              <span>新增</span>
+              <span style="display: inline-block; width: 20px; height: 2px; background: #ec4899; margin: 0 5px 0 20px; vertical-align: middle;"></span>
+              <span>活跃</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">日内小时明细表</div>
+            <div class="card-block-sub">按小时汇总实时活跃、新增与付费数据，用于追踪关键时段表现。服务器/终端/国家维度可通过上方筛选条件控制。</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>时间（小时）</span>
+            <span>活跃账号数</span>
+            <span>新增账号数</span>
+            <span>每日总收入</span>
+            <span>付费账号数</span>
+            <span>付费率</span>
+            <span>ARPU</span>
+            <span>ARPPU</span>
+            <span>付费活跃账号数</span>
+            <span>新增付费用户数</span>
+            <span>首次付费用户数</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>00:00</span>
+            <span>5,234</span>
+            <span>120</span>
+            <span>￥1,200</span>
+            <span>89</span>
+            <span>1.7%</span>
+            <span>￥0.23</span>
+            <span>￥13.48</span>
+            <span>89</span>
+            <span>23</span>
+            <span>15</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>04:00</span>
+            <span>3,120</span>
+            <span>89</span>
+            <span>￥850</span>
+            <span>56</span>
+            <span>1.8%</span>
+            <span>￥0.27</span>
+            <span>￥15.18</span>
+            <span>56</span>
+            <span>18</span>
+            <span>12</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>08:00</span>
+            <span>8,950</span>
+            <span>456</span>
+            <span>￥4,200</span>
+            <span>345</span>
+            <span>3.8%</span>
+            <span>￥0.47</span>
+            <span>￥12.17</span>
+            <span>345</span>
+            <span>123</span>
+            <span>98</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>12:00</span>
+            <span>15,678</span>
+            <span>890</span>
+            <span>￥12,500</span>
+            <span>1,023</span>
+            <span>6.5%</span>
+            <span>￥0.80</span>
+            <span>￥12.22</span>
+            <span>1,023</span>
+            <span>345</span>
+            <span>289</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>16:00</span>
+            <span>18,900</span>
+            <span>1,234</span>
+            <span>￥18,750</span>
+            <span>1,456</span>
+            <span>7.7%</span>
+            <span>￥0.99</span>
+            <span>￥12.88</span>
+            <span>1,456</span>
+            <span>456</span>
+            <span>389</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+            <span>20:00</span>
+            <span>22,345</span>
+            <span>1,567</span>
+            <span>￥25,600</span>
+            <span>1,890</span>
+            <span>8.5%</span>
+            <span>￥1.15</span>
+            <span>￥13.54</span>
+            <span>1,890</span>
+            <span>567</span>
+            <span>489</span>
+          </div>
+          <div class="table-footnote">
+            说明：在数数里可用「表格」组件 + 维度（小时）+ 指标（活跃 / 新增 / 付费 等）实现，服务器/终端/国家可通过筛选条件控制。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板2：周 / 月运营报表 -->
+    <section class="panel" id="panel-period">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>周 / 月运营报表</span>
+            <span class="panel-title-tag">对应：周报 / 月报（账号 / 设备 / 角色）</span>
+          </div>
+          <div class="panel-subtitle">
+            周对周、月对月观察 DAU / 新增 / 收入 / 付费率 等核心指标变化。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+          <div class="mini-tabs" id="periodTabs">
+            <div class="mini-tab active" data-type="week">周报</div>
+            <div class="mini-tab" data-type="month">月报</div>
+          </div>
+          <button class="btn-ghost">导出报表</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label"><span>本周平均 DAU</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">26,500</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend">+5.1%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>本周新增账号</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">9,800</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend down">-1.8%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>本周总付费金额</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥420,000</span>
+          </div>
+          <div class="kpi-sub">
+            <span>付费人数：6,200</span>
+            <span>ARPPU：￥67.7</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>本周付费率</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">11.3%</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend">+0.7pct</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">周 / 月核心指标对比</div>
+            <div class="card-block-sub">对应：周报 / 月报中的账号 / 设备 / 角色维度汇总</div>
+          </div>
+          <div class="card-block-tags">
+            <span class="tag tag-primary">组合图（柱 + 折线）</span>
+            <span class="tag">时间粒度：周 / 月</span>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          图表占位：按周（或月）展示 DAU、付费金额、付费率 等多指标组合图。
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">周 / 月运营明细表</div>
+            <div class="card-block-sub">支持按 服务器 / 终端 / 国家 / 渠道 下钻查看</div>
+          </div>
+        </div>
+        <div class="table-placeholder">
+          <div class="table-header-row">
+            <span>周 / 月 × 服务器 × 终端</span>
+            <span>平均 DAU</span>
+            <span>新增账号</span>
+            <span>总付费金额</span>
+            <span>付费率</span>
+          </div>
+          <div class="table-data-row">
+            <span>2026-W03 · 国服-1区 · Android</span>
+            <span>12,300</span>
+            <span>3,200</span>
+            <span>￥150,000</span>
+            <span>10.8%</span>
+          </div>
+          <div class="table-data-row">
+            <span>2026-W03 · 国服-1区 · iOS</span>
+            <span>8,600</span>
+            <span>2,100</span>
+            <span>￥120,000</span>
+            <span>12.1%</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：时间（周 / 月） + 服务器 + 终端 等维度，组合相应指标生成此表。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板3：留存 & 回流 & LTV -->
+    <section class="panel" id="panel-retention">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>留存 & 回流 & LTV 分析</span>
+            <span class="panel-title-tag">对应：留存 / 回流用户 / Ltv 模块（高优先级）</span>
+          </div>
+          <div class="panel-subtitle">
+            对每日新增、回流和付费用户进行留存与 LTV 视角的生命周期分析，支持账号 / 设备 / 角色口径切换。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+          <div class="mini-tabs" id="retentionDimTabs">
+            <div class="mini-tab active" data-dim="account">账号</div>
+            <div class="mini-tab" data-dim="device">设备</div>
+            <div class="mini-tab" data-dim="role">角色</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label"><span>昨日新增账号</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">4,500</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>1 日留存</span>
+            <span class="kpi-trend">38.2%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>昨日新增 7 日留存</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">22.5%</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周同期</span>
+            <span class="kpi-trend">+1.3pct</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>昨日新增 30 日 LTV</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥16.8</span>
+          </div>
+          <div class="kpi-sub">
+            <span>新增付费率</span>
+            <span>4.5%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>回流用户规模（近 7 日）</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">12,300</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>1 日回流留存</span>
+            <span>41.0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">每日新增用户留存曲线</div>
+              <div class="card-block-sub">对应：每日新增用户留存-账号 / 设备 / 角色，支持 1~30 / 45 / 60 / 90 / 180 / 360 天</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">多折线</span>
+              <span class="tag">留存率 × 天数</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：新增用户按留存天数（1 / 3 / 7 / 14 / 30 / ...）的留存率曲线。
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">回流用户留存 & 付费留存</div>
+              <div class="card-block-sub">
+                对应：1 日回流用户留存（账号 / 设备 / 角色）+ 付费用户留存（新增付费角色）
+              </div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">分组柱状</span>
+              <span class="tag">回流 / 付费</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：对比【新玩家】vs【回流玩家】vs【新增付费用户】在 D1 / D7 / D30 的留存表现。
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增用户 LTV 曲线</div>
+            <div class="card-block-sub">
+              对应：每日新增用户Ltv（账号 / 设备 / 角色）+ 1 日回流用户Ltv；可按 渠道 / 投放维度 分组。
+            </div>
+          </div>
+          <div class="card-block-tags">
+            <span class="tag tag-primary">折线图</span>
+            <span class="tag">累计 LTV × 天数</span>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          图表占位：按留存天数展示 LTV 累计曲线，可按渠道 / 终端拆线。
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">不同付费区间用户留存情况</div>
+            <div class="card-block-sub">
+              对应：不同付费区间留存情况（白嫖 / 小R / 中R / 大R 等），用于观察高价值玩家活跃度。
+            </div>
+          </div>
+        </div>
+        <div class="table-placeholder">
+          <div class="table-header-row">
+            <span>付费区间</span>
+            <span>用户数占比</span>
+            <span>D7 留存</span>
+            <span>D30 留存</span>
+            <span>人均 LTV（30 天）</span>
+          </div>
+          <div class="table-data-row">
+            <span>白嫖（0 元）</span>
+            <span>72%</span>
+            <span>15.2%</span>
+            <span>8.6%</span>
+            <span>￥0</span>
+          </div>
+          <div class="table-data-row">
+            <span>小 R（1~100 元）</span>
+            <span>18%</span>
+            <span>32.4%</span>
+            <span>19.5%</span>
+            <span>￥45</span>
+          </div>
+          <div class="table-data-row">
+            <span>中 R（100~1000 元）</span>
+            <span>8%</span>
+            <span>48.6%</span>
+            <span>30.2%</span>
+            <span>￥280</span>
+          </div>
+          <div class="table-footnote">
+            在数数中，可通过「分段函数 / 区间聚合」方式，将付费金额划分为若干区间，再计算对应留存和 LTV 指标。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板4：付费 & 商城 & 广告 -->
+    <section class="panel" id="panel-pay">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>付费 & 商城 & 广告收入分析</span>
+            <span class="panel-title-tag">对应：付费整体 / 商品 / 首充 / 广告 / 购买偏好</span>
+          </div>
+          <div class="panel-subtitle">
+            综合观察整体付费表现、充值商品购买分布、首充（破冰付费），以及广告收入和不同玩家群体的购买偏好。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+          <button class="btn-ghost">导出付费明细</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label"><span>选定周期总付费金额</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥1,280,000</span>
+          </div>
+          <div class="kpi-sub">
+            <span>付费人数：12,400</span>
+            <span>订单数：32,100</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>ARPU / ARPPU</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">ARPU ￥18.6</span>
+          </div>
+          <div class="kpi-sub">
+            <span>ARPPU</span>
+            <span>￥103.2</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>首充用户数 & 金额</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">3,200</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>首充金额</span>
+            <span>￥96,000</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>广告收入</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥220,000</span>
+          </div>
+          <div class="kpi-sub">
+            <span>广告占总收入</span>
+            <span>17.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">整体付费趋势（金额 / 人数 / 付费率）</div>
+              <div class="card-block-sub">对应：付费整体表现-总额 / 付费用户 / ARPU 等</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">组合图</span>
+              <span class="tag">日期 × 金额 / 人数 / 付费率</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：按日期展示总付费金额（柱形）+ 付费人数（折线）+ 付费率（次轴折线）。
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">充值商品购买 TopN</div>
+              <div class="card-block-sub">对应：充值商品购买数据 + 网页商城相关</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">TopN 柱状</span>
+              <span class="tag">商品 ID / 名称</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：展示 Top10 充值商品的购买次数 / 购买人数 / 金额占比，可按「网页商城 / 内购」分组。
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">破冰付费（首充路径 & 商品偏好）</div>
+            <div class="card-block-sub">对应：破冰付费-首充购买商品 + 购买偏好 / 投放用户购买偏好</div>
+          </div>
+        </div>
+        <div class="table-placeholder">
+          <div class="table-header-row">
+            <span>首充商品 / 区间</span>
+            <span>首充玩家占比</span>
+            <span>来自投放用户占比</span>
+            <span>D7 付费留存</span>
+            <span>后续 30 天 LTV</span>
+          </div>
+          <div class="table-data-row">
+            <span>首充礼包-6 元</span>
+            <span>58%</span>
+            <span>65%</span>
+            <span>42%</span>
+            <span>￥72</span>
+          </div>
+          <div class="table-data-row">
+            <span>首充礼包-30 元</span>
+            <span>28%</span>
+            <span>22%</span>
+            <span>55%</span>
+            <span>￥160</span>
+          </div>
+          <div class="table-data-row">
+            <span>其他首充商品</span>
+            <span>14%</span>
+            <span>13%</span>
+            <span>38%</span>
+            <span>￥95</span>
+          </div>
+          <div class="table-footnote">
+            可通过「首单付费商品」+「是否投放用户」等维度，构建首充路径 / 偏好分析视图。
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">广告收入分布</div>
+            <div class="card-block-sub">对应：广告收入相关（按广告位 / 渠道 / 国家等维度）</div>
+          </div>
+          <div class="card-block-tags">
+            <span class="tag tag-primary">堆叠柱状</span>
+            <span class="tag">广告位 × 收入</span>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          图表占位：按广告位 / 场景 / 国家拆分广告收入，并对比内购收入占比。
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板5：转化漏斗 & 投放 -->
+    <section class="panel" id="panel-funnel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>转化漏斗 & 投放效果</span>
+            <span class="panel-title-tag">对应：创角前 / 后行为漏斗 + 投放漏斗 + 投放留存 / LTV</span>
+          </div>
+          <div class="panel-subtitle">
+            从曝光 / 点击 / 安装 / 首启 / 创角 / 等级节点 / 首充，全链路评估投放与自然量的转化表现。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+          <button class="btn-ghost">切换到投放维度视图</button>
+        </div>
+      </div>
+
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">创角前漏斗（曝光 → 点击 → 安装 → 首启）</div>
+              <div class="card-block-sub">对应：关键步骤确认-创角前，可按 渠道 / Campaign / 终端 / 国家 查看</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">漏斗图</span>
+              <span class="tag">投放前链路</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：标准投放转化漏斗，展示每一步的转化率和流失率。
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">创角后行为漏斗（创角 → 等级 / 关卡 → 首付）</div>
+              <div class="card-block-sub">对应：创角 / 等级 / 是否付费等-创角后；可用关卡通过率细分。</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">漏斗图</span>
+              <span class="tag">创角后关键行为</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：创角 → 完成新手引导 → 通过第 X 关 → 达到 Y 级 → 首充，展示各步骤流失。
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">投放维度转化 & 留存 / LTV 概览</div>
+            <div class="card-block-sub">
+              对应：基于投放统计维度的转化率漏斗 / 新增留存 / 新增 Ltv，用于对比不同渠道 / Campaign 质量。
+            </div>
+          </div>
+          <div class="card-block-tags">
+            <span class="tag tag-primary">矩阵表</span>
+            <span class="tag">渠道 × 投放单元</span>
+          </div>
+        </div>
+        <div class="table-placeholder">
+          <div class="table-header-row">
+            <span>渠道 / Campaign</span>
+            <span>D1 / D7 留存</span>
+            <span>D30 LTV</span>
+            <span>安装 → 创角</span>
+            <span>创角 → 首付</span>
+          </div>
+          <div class="table-data-row">
+            <span>渠道 A · 素材组 1</span>
+            <span>42% / 21%</span>
+            <span>￥26.3</span>
+            <span>68%</span>
+            <span>9.5%</span>
+          </div>
+          <div class="table-data-row">
+            <span>渠道 B · 素材组 2</span>
+            <span>36% / 18%</span>
+            <span>￥19.8</span>
+            <span>54%</span>
+            <span>7.2%</span>
+          </div>
+          <div class="table-footnote">
+            待「投放数据」接入数数后，可用 渠道 / Campaign / 素材 等维度，在此表中补全并联动到各漏斗分析。
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // 左侧导航切换
+  const sidebarItems = document.querySelectorAll('.sidebar-item');
+  const panels = {
+    realtime: document.getElementById('panel-realtime'),
+    period: document.getElementById('panel-period'),
+    retention: document.getElementById('panel-retention'),
+    pay: document.getElementById('panel-pay'),
+    funnel: document.getElementById('panel-funnel')
+  };
+
+  sidebarItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const target = item.getAttribute('data-panel');
+
+      sidebarItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      Object.keys(panels).forEach(k => panels[k].classList.remove('active'));
+      if (panels[target]) {
+        panels[target].classList.add('active');
+      }
+    });
+  });
+
+  // 周报 / 月报 Tab（仅视觉）
+  const periodTabs = document.querySelectorAll('#periodTabs .mini-tab');
+  periodTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      periodTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // 留存口径 Tab（账号 / 设备 / 角色）
+  const retentionDimTabs = document.querySelectorAll('#retentionDimTabs .mini-tab');
+  retentionDimTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      retentionDimTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
+
