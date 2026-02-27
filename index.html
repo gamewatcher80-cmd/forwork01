@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>邦邦2 - 游戏运营分析原型 v1</title>
+  <title>游戏运营分析原型 v1</title>
   <style>
     :root {
       --bg-main: #f3f5f7;
@@ -34,7 +34,7 @@
 
     .app-layout {
       display: grid;
-      grid-template-columns: 220px 1fr;
+      grid-template-columns: 250px 1fr;
       grid-template-rows: 56px 1fr;
       grid-template-areas:
         "sidebar header"
@@ -104,6 +104,7 @@
       flex-direction: column;
       padding: 10px 10px 16px;
       border-right: 1px solid rgba(55, 65, 81, 0.7);
+      overflow-y: auto;
     }
 
     .sidebar-section-title {
@@ -120,24 +121,26 @@
     }
 
     .sidebar-item {
-      padding: 8px 10px;
+      padding: 10px 12px;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      transition: background 0.15s ease, color 0.15s ease;
+      gap: 4px;
+      transition: all 0.15s ease;
       font-size: 13px;
+      border-left: 3px solid transparent;
     }
 
     .sidebar-item:hover {
       background: rgba(55, 65, 81, 0.8);
+      border-left-color: rgba(59, 130, 246, 0.5);
     }
 
     .sidebar-item.active {
-      background: rgba(31, 41, 55, 0.95);
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(31, 41, 55, 0.95) 100%);
       color: #e5e7eb;
-      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.4);
+      border-left-color: #3b82f6;
     }
 
     .sidebar-item-title {
@@ -183,8 +186,13 @@
     .filters-bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      border: 1px solid var(--border-soft);
     }
 
     .filter-group {
@@ -199,12 +207,17 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #ffffff;
-      border-radius: 999px;
-      padding: 5px 10px;
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 6px 12px;
       border: 1px solid var(--border-soft);
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
       font-size: 12px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .filter-control:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     .filter-control select,
@@ -239,17 +252,20 @@
 
     .panel-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 2px;
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-soft);
     }
 
     .panel-title {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      color: var(--text-main);
     }
 
     .panel-title-tag {
@@ -273,8 +289,8 @@
     }
 
     .btn-ghost {
-      padding: 4px 10px;
-      border-radius: 999px;
+      padding: 6px 14px;
+      border-radius: 6px;
       border: 1px solid var(--border-soft);
       background: #ffffff;
       color: var(--text-sub);
@@ -282,27 +298,33 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s ease;
     }
 
     .btn-ghost:hover {
-      border-color: #cbd5f5;
-      color: #4b5563;
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
     }
 
     .btn-primary-soft {
-      padding: 4px 10px;
-      border-radius: 999px;
+      padding: 6px 14px;
+      border-radius: 6px;
       border: none;
       background: linear-gradient(135deg, #3b82f6, #6366f1);
       color: white;
       cursor: pointer;
-      font-size: 11px;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transition: all 0.15s ease;
     }
 
     .btn-primary-soft:hover {
-      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
     }
 
     /* 指标卡 */
@@ -316,12 +338,18 @@
     .kpi-card {
       background: var(--bg-panel);
       border-radius: var(--radius-lg);
-      padding: 10px 12px;
+      padding: 14px 16px;
       box-shadow: var(--shadow-soft);
       border: 1px solid rgba(229, 231, 235, 0.9);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
     }
 
     .kpi-label {
@@ -339,22 +367,28 @@
     }
 
     .kpi-value {
-      font-size: 20px;
-      font-weight: 600;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .kpi-unit {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-sub);
     }
 
     .kpi-trend {
       font-size: 11px;
       color: #16a34a;
+      font-weight: 500;
+      padding: 2px 6px;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 4px;
     }
 
     .kpi-trend.down {
       color: #dc2626;
+      background: rgba(220, 38, 38, 0.1);
     }
 
     .kpi-sub {
@@ -378,12 +412,17 @@
     .card-block {
       background: var(--bg-panel);
       border-radius: var(--radius-lg);
-      padding: 10px 12px;
+      padding: 14px 16px;
       box-shadow: var(--shadow-soft);
       border: 1px solid rgba(229, 231, 235, 0.9);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .card-block:hover {
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
     }
 
     .card-block-header {
@@ -428,16 +467,32 @@
       min-height: 190px;
       border-radius: 8px;
       border: 1px dashed #d1d5db;
-      background: repeating-linear-gradient(
-        -45deg,
-        #f9fafb,
-        #f9fafb 8px,
-        #f3f4f6 8px,
-        #f3f4f6 16px
-      );
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
       position: relative;
       overflow: hidden;
-      padding: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .chart-placeholder::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(90deg, transparent 49.5%, #e2e8f0 49.5%, #e2e8f0 50.5%, transparent 50.5%),
+        linear-gradient(0deg, transparent 49.5%, #e2e8f0 49.5%, #e2e8f0 50.5%, transparent 50.5%);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
     }
 
     .table-placeholder {
@@ -448,6 +503,30 @@
       padding: 6px;
       font-size: 11px;
       color: #6b7280;
+      overflow-x: auto !important;
+      max-height: 400px;
+      overflow-y: auto !important;
+    }
+
+    .table-placeholder .table-header-row {
+      position: sticky;
+      top: 0;
+      background: #f3f4f6;
+      z-index: 1;
+    }
+
+    .table-placeholder .table-header-row span {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .table-placeholder .table-data-row span {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .table-placeholder .table-data-row:hover {
+      background: rgba(59, 130, 246, 0.04);
     }
 
     .table-header-row {
@@ -474,7 +553,58 @@
       color: #9ca3af;
     }
 
-    /* 小 Tab（如周报 / 月报） */
+    /* 留存表格样式 */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .table-header {
+      display: grid;
+      gap: 4px;
+      padding: 8px 6px;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 500;
+      font-size: 11px;
+      color: #4b5563;
+      background: #f3f4f6;
+    }
+
+    .table-header span {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .table-container .table-data-row {
+      display: grid;
+      gap: 4px;
+      padding: 6px;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .table-container .table-data-row span {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .table-container .table-data-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-container .table-data-row:hover {
+      background: rgba(59, 130, 246, 0.04);
+    }
+
+    /* 全宽卡片 */
+    .card-block.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* 小 Tab（如周报/月报） */
     .mini-tabs {
       display: inline-flex;
       border-radius: 999px;
@@ -551,9 +681,9 @@
   <!-- 顶部 -->
   <header class="header">
     <div class="header-left">
-      <div class="product-badge">邦2</div>
+      <div class="product-badge">数据</div>
       <div class="header-title">
-        <div class="header-title-main">邦邦2 - 游戏运营分析看板（原型 v1）</div>
+        <div class="header-title-main">游戏运营分析看板（原型 v1）</div>
         <div class="header-title-sub">参考数数面板布局 · 静态原型 · 待接入真实数据</div>
       </div>
     </div>
@@ -569,32 +699,46 @@
       <li class="sidebar-item active" data-panel="realtime">
         <div class="sidebar-item-title">
           <span class="sidebar-item-name">实时数据</span>
-          <span class="sidebar-item-tag">在线 / 新增 / 活跃</span>
+          <span class="sidebar-item-tag">在线 / 活跃 / 新增 / 收入</span>
         </div>
-        <div class="sidebar-item-desc">对应：实时角色在线 / 实时新增 / 实时活跃</div>
+        <div class="sidebar-item-desc">对应：实时在线 / 实时活跃 / 实时新增 / 实时收入</div>
       </li>
       <li class="sidebar-item" data-panel="period">
         <div class="sidebar-item-title">
-          <span class="sidebar-item-name">每日数据-日报</span>
+          <span class="sidebar-item-name">每日数据 - 日报</span>
           <span class="sidebar-item-tag">日粒度</span>
         </div>
-        <div class="sidebar-item-desc">对应：每日数据日报（账号 / 设备 / 角色）</div>
+        <div class="sidebar-item-desc">对应：日报（账号 / 设备 / 角色）</div>
       </li>
-      <li class="sidebar-item" data-panel="period">
+      <li class="sidebar-item" data-panel="period-weekly">
         <div class="sidebar-item-title">
-          <span class="sidebar-item-name">每周数据-周报</span>
+          <span class="sidebar-item-name">每周数据 - 周报</span>
           <span class="sidebar-item-tag">周粒度</span>
         </div>
-        <div class="sidebar-item-desc">对应：周数据-周报（账号 / 设备 / 角色）</div>
+        <div class="sidebar-item-desc">对应：周报（账号 / 设备 / 角色）</div>
       </li>
-      <li class="sidebar-item" data-panel="period">
+      <li class="sidebar-item" data-panel="period-monthly">
         <div class="sidebar-item-title">
-          <span class="sidebar-item-name">每月数据-月报</span>
+          <span class="sidebar-item-name">每月数据 - 月报</span>
           <span class="sidebar-item-tag">月粒度</span>
         </div>
-        <div class="sidebar-item-desc">对应：月数据-月报（账号 / 设备 / 角色）</div>
+        <div class="sidebar-item-desc">对应：月运营报表（账号 / 设备 / 角色）</div>
       </li>
       <li class="sidebar-item" data-panel="retention">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">留存</span>
+          <span class="sidebar-item-tag">新增留存</span>
+        </div>
+        <div class="sidebar-item-desc">对应：每日新增用户留存（账号 / 设备 / 角色）</div>
+      </li>
+      <li class="sidebar-item" data-panel="ltv">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">Ltv</span>
+          <span class="sidebar-item-tag">价值曲线</span>
+        </div>
+        <div class="sidebar-item-desc">对应：新增用户Ltv数据</div>
+      </li>
+      <li class="sidebar-item" data-panel="return">
         <div class="sidebar-item-title">
           <span class="sidebar-item-name">回流用户</span>
           <span class="sidebar-item-tag">回流表现</span>
@@ -608,26 +752,26 @@
         </div>
         <div class="sidebar-item-desc">对应：创角前 / 创角后 / 投放转化漏斗</div>
       </li>
-      <li class="sidebar-item" data-panel="retention">
+      <li class="sidebar-item" data-panel="pay-recharge">
         <div class="sidebar-item-title">
-          <span class="sidebar-item-name">留存</span>
-          <span class="sidebar-item-tag">新增留存</span>
-        </div>
-        <div class="sidebar-item-desc">对应：每日新增用户留存（账号 / 设备 / 角色）</div>
-      </li>
-      <li class="sidebar-item" data-panel="retention">
-        <div class="sidebar-item-title">
-          <span class="sidebar-item-name">Ltv</span>
-          <span class="sidebar-item-tag">价值曲线</span>
-        </div>
-        <div class="sidebar-item-desc">对应：每日新增 / 回流用户 Ltv 分析</div>
-      </li>
-      <li class="sidebar-item" data-panel="pay">
-        <div class="sidebar-item-title">
-          <span class="sidebar-item-name">付费数据</span>
-          <span class="sidebar-item-tag">收入相关</span>
+          <span class="sidebar-item-name">付费数据-充值</span>
+          <span class="sidebar-item-tag">收入</span>
         </div>
         <div class="sidebar-item-desc">对应：付费整体 / 商品 / 首充 / 广告收入</div>
+      </li>
+      <li class="sidebar-item" data-panel="pay-consume">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">付费数据-消耗</span>
+          <span class="sidebar-item-tag">消耗</span>
+        </div>
+        <div class="sidebar-item-desc">对应：钻石消耗 / 体力消耗 / 道具消耗</div>
+      </li>
+      <li class="sidebar-item" data-panel="advertising">
+        <div class="sidebar-item-title">
+          <span class="sidebar-item-name">投放数据</span>
+          <span class="sidebar-item-tag">渠道分析</span>
+        </div>
+        <div class="sidebar-item-desc">对应：各投放渠道支出、新增、ROI等数据</div>
       </li>
     </ul>
 
@@ -640,13 +784,18 @@
 
   <!-- 主内容 -->
   <main class="main">
-    <!-- 通用筛选条（示意） -->
+    <!-- 通用筛选条 -->
     <div class="filters-bar">
       <div class="filter-group">
-        <span>时间范围</span>
+        <span>开始时间</span>
         <div class="filter-control">
-          <input type="text" value="近 7 天" />
-          <span class="filter-chip">支持：单日 / 区间 / 周 / 月</span>
+          <input type="date" value="2026-01-01" />
+        </div>
+      </div>
+      <div class="filter-group">
+        <span>结束时间</span>
+        <div class="filter-control">
+          <input type="date" id="endDateInput" />
         </div>
       </div>
       <div class="filter-group">
@@ -654,8 +803,9 @@
         <div class="filter-control">
           <select>
             <option>全部服务器</option>
-            <option>国服 - 大区1</option>
-            <option>国服 - 大区2</option>
+            <option>英文地区</option>
+            <option>韩国</option>
+            <option>港澳台</option>
           </select>
         </div>
       </div>
@@ -675,9 +825,12 @@
         <div class="filter-control">
           <select>
             <option>全部</option>
-            <option>中国</option>
-            <option>美国</option>
-            <option>日本</option>
+            <option>中国-CN</option>
+            <option>中国-HK</option>
+            <option>中国-TW</option>
+            <option>韩国-KR</option>
+            <option>美国-US</option>
+            <option>加拿大-CA</option>
           </select>
         </div>
       </div>
@@ -691,18 +844,32 @@
           </select>
         </div>
       </div>
+      <div class="filter-group">
+        <span>有效/去黑产/去水</span>
+        <div class="filter-control">
+          <select>
+            <option>有效</option>
+            <option>去黑产</option>
+            <option>去水</option>
+            <option>有效 + 去黑产</option>
+            <option>有效 + 去水</option>
+            <option>去黑产 + 去水</option>
+            <option>有效 + 去黑产 + 去水</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <!-- 面板1：实时监控 -->
+    <!-- 面板 1：实时监控 -->
     <section class="panel active" id="panel-realtime">
       <div class="panel-header">
         <div>
           <div class="panel-title">
             <span>实时监控（账号 / 角色 / 设备）</span>
-            <span class="panel-title-tag">对应：实时角色在线 / 实时新增 / 实时活跃</span>
+            <span class="panel-title-tag">对应：实时在线 / 实时活跃 / 实时新增 / 实时收入</span>
           </div>
           <div class="panel-subtitle">
-            关注当日分小时的在线、新增、活跃与基础付费表现，用于游戏开服节奏监控和异常波动排查，可按服务器 / 终端 / 国家维度细分。
+            关注当日分小时的在线、活跃、新增与收入表现，用于游戏开服节奏监控和异常波动排查，可按服务器 / 终端 / 国家 / 有效维度细分。
           </div>
         </div>
         <div class="panel-right-actions">
@@ -728,20 +895,6 @@
         </div>
         <div class="kpi-card">
           <div class="kpi-label">
-            <span>今日实时新增账号</span>
-            <span class="filter-chip">账号</span>
-          </div>
-          <div class="kpi-main">
-            <span class="kpi-value">3,210</span>
-            <span class="kpi-unit">个</span>
-          </div>
-          <div class="kpi-sub">
-            <span>预计全天</span>
-            <span class="kpi-trend down">-3.4%</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">
             <span>今日实时活跃账号</span>
             <span class="filter-chip">账号</span>
           </div>
@@ -756,7 +909,21 @@
         </div>
         <div class="kpi-card">
           <div class="kpi-label">
-            <span>今日实时付费金额</span>
+            <span>今日实时新增账号</span>
+            <span class="filter-chip">账号</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">3,210</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>预计全天</span>
+            <span class="kpi-trend down">-3.4%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>今日实时收入</span>
             <span class="filter-chip">预留</span>
           </div>
           <div class="kpi-main">
@@ -774,7 +941,7 @@
           <div class="card-block-header">
             <div>
               <div class="card-block-title">分小时在线趋势（账号 / 角色）</div>
-              <div class="card-block-sub">对应：实时角色在线-分小时数据；按小时查看各大区 / 终端 / 国家在线曲线，用于发现峰值与异常低谷。</div>
+              <div class="card-block-sub">对应：实时在线数据；按小时查看各大区 / 终端 / 国家在线曲线，用于发现峰值与异常低谷。</div>
             </div>
             <div class="card-block-tags">
               <span class="tag tag-primary">折线图</span>
@@ -782,49 +949,25 @@
             </div>
           </div>
           <div class="chart-placeholder" style="padding: 10px;">
-            <div style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
               分小时在线人数趋势
             </div>
-            <div style="width: 100%; height: 160px; position: relative; border-left: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
-              <!-- 网格线 -->
-              <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              
-              <!-- 折线图（带数据点和渐变填充） -->
-              <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
-                <!-- 定义渐变填充 -->
-                <defs>
-                  <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
-                    <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
-                  </linearGradient>
-                </defs>
-                <!-- 填充区域 -->
-                <polygon points="4.2%,60% 12.5%,55% 20.8%,50% 29.2%,45% 37.5%,40% 45.8%,35% 54.2%,30% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55% 95.8%,100% 4.2%,100%"
-                         fill="url(#lineGradient1)" stroke="none"/>
-                <!-- 折线 -->
-                <polyline points="4.2%,60% 12.5%,55% 20.8%,50% 29.2%,45% 37.5%,40% 45.8%,35% 54.2%,30% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55%"
-                          fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- 数据点 -->
-                <circle cx="4.2%" cy="60%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="12.5%" cy="55%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="20.8%" cy="50%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="29.2%" cy="45%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="37.5%" cy="40%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="45.8%" cy="35%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="54.2%" cy="30%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="62.5%" cy="35%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="70.8%" cy="40%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="79.2%" cy="45%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="87.5%" cy="50%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="95.8%" cy="55%" r="7" fill="white" stroke="#3b82f6" stroke-width="3"/>
-                <!-- 数据点悬停效果 -->
-                <circle cx="4.2%" cy="60%" r="8" fill="transparent" stroke="#3b82f6" stroke-width="1" opacity="0.5">
-                  <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/>
-                </circle>
-              </svg>
-            </div>
+            <svg width="100%" height="160" viewBox="0 0 500 140" preserveAspectRatio="none" style="display: block;">
+              <polyline fill="none" stroke="#3b82f6" stroke-width="2" points="0,56 41.7,63 83.3,70 125,77 166.7,84 208.3,91 250,98 291.7,91 333.3,84 375,77 416.7,70 458.3,63 500,56"/>
+              <circle cx="0" cy="56" r="3" fill="#3b82f6"/>
+              <circle cx="41.7" cy="63" r="3" fill="#3b82f6"/>
+              <circle cx="83.3" cy="70" r="3" fill="#3b82f6"/>
+              <circle cx="125" cy="77" r="3" fill="#3b82f6"/>
+              <circle cx="166.7" cy="84" r="3" fill="#3b82f6"/>
+              <circle cx="208.3" cy="91" r="3" fill="#3b82f6"/>
+              <circle cx="250" cy="98" r="3" fill="#3b82f6"/>
+              <circle cx="291.7" cy="91" r="3" fill="#3b82f6"/>
+              <circle cx="333.3" cy="84" r="3" fill="#3b82f6"/>
+              <circle cx="375" cy="77" r="3" fill="#3b82f6"/>
+              <circle cx="416.7" cy="70" r="3" fill="#3b82f6"/>
+              <circle cx="458.3" cy="63" r="3" fill="#3b82f6"/>
+              <circle cx="500" cy="56" r="3" fill="#3b82f6"/>
+            </svg>
             <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9ca3af;">
               <span>00:00</span>
               <span>04:00</span>
@@ -847,68 +990,39 @@
             </div>
           </div>
           <div class="chart-placeholder" style="padding: 10px;">
-            <div style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
               分小时新增 & 活跃账号数
             </div>
-            <div style="width: 100%; height: 160px; position: relative; border-left: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
-              <!-- 网格线 -->
-              <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #f3f4f6;"></div>
-              
-              <!-- 折线（带渐变填充） -->
-              <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
-                <!-- 定义渐变填充 -->
-                <defs>
-                  <linearGradient id="lineGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#16a34a;stop-opacity:0.25" />
-                    <stop offset="100%" style="stop-color:#16a34a;stop-opacity:0" />
-                  </linearGradient>
-                  <linearGradient id="lineGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.25" />
-                    <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0" />
-                  </linearGradient>
-                </defs>
-                <!-- 新增账号数填充区域 -->
-                <polygon points="4.2%,70% 12.5%,65% 20.8%,55% 29.2%,60% 37.5%,50% 45.8%,45% 54.2%,40% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55% 95.8%,100% 4.2%,100%"
-                         fill="url(#lineGradient2)" stroke="none"/>
-                <!-- 活跃账号数填充区域 -->
-                <polygon points="4.2%,50% 12.5%,45% 20.8%,35% 29.2%,30% 37.5%,20% 45.8%,15% 54.2%,10% 62.5%,5% 70.8%,10% 79.2%,15% 87.5%,20% 95.8%,25% 95.8%,100% 4.2%,100%"
-                         fill="url(#lineGradient3)" stroke="none"/>
-                <!-- 新增账号数折线 -->
-                <polyline points="4.2%,70% 12.5%,65% 20.8%,55% 29.2%,60% 37.5%,50% 45.8%,45% 54.2%,40% 62.5%,35% 70.8%,40% 79.2%,45% 87.5%,50% 95.8%,55%"
-                          fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- 活跃账号数折线 -->
-                <polyline points="4.2%,50% 12.5%,45% 20.8%,35% 29.2%,30% 37.5%,20% 45.8%,15% 54.2%,10% 62.5%,5% 70.8%,10% 79.2%,15% 87.5%,20% 95.8%,25%"
-                          fill="none" stroke="#ec4899" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- 新增数据点（带白色边框） -->
-                <circle cx="4.2%" cy="70%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="12.5%" cy="65%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="20.8%" cy="55%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="29.2%" cy="60%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="37.5%" cy="50%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="45.8%" cy="45%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="54.2%" cy="40%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="62.5%" cy="35%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="70.8%" cy="40%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="79.2%" cy="45%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="87.5%" cy="50%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <circle cx="95.8%" cy="55%" r="4" fill="white" stroke="#16a34a" stroke-width="2"/>
-                <!-- 活跃数据点（带白色边框） -->
-                <circle cx="4.2%" cy="50%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="12.5%" cy="45%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="20.8%" cy="35%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="29.2%" cy="30%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="37.5%" cy="20%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="45.8%" cy="15%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="54.2%" cy="10%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="62.5%" cy="5%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="70.8%" cy="10%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="79.2%" cy="15%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="87.5%" cy="20%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-                <circle cx="95.8%" cy="25%" r="4" fill="white" stroke="#ec4899" stroke-width="2"/>
-              </svg>
-            </div>
+            <svg width="100%" height="160" viewBox="0 0 500 140" preserveAspectRatio="none" style="display: block;">
+              <polyline fill="none" stroke="#16a34a" stroke-width="2" points="0,98 41.7,91 83.3,77 125,84 166.7,70 208.3,63 250,56 291.7,49 333.3,56 375,63 416.7,70 458.3,77 500,84"/>
+              <polyline fill="none" stroke="#ec4899" stroke-width="2" points="0,70 41.7,63 83.3,49 125,42 166.7,28 208.3,21 250,14 291.7,7 333.3,14 375,21 416.7,28 458.3,35 500,42"/>
+              <circle cx="0" cy="98" r="3" fill="#16a34a"/>
+              <circle cx="41.7" cy="91" r="3" fill="#16a34a"/>
+              <circle cx="83.3" cy="77" r="3" fill="#16a34a"/>
+              <circle cx="125" cy="84" r="3" fill="#16a34a"/>
+              <circle cx="166.7" cy="70" r="3" fill="#16a34a"/>
+              <circle cx="208.3" cy="63" r="3" fill="#16a34a"/>
+              <circle cx="250" cy="56" r="3" fill="#16a34a"/>
+              <circle cx="291.7" cy="49" r="3" fill="#16a34a"/>
+              <circle cx="333.3" cy="56" r="3" fill="#16a34a"/>
+              <circle cx="375" cy="63" r="3" fill="#16a34a"/>
+              <circle cx="416.7" cy="70" r="3" fill="#16a34a"/>
+              <circle cx="458.3" cy="77" r="3" fill="#16a34a"/>
+              <circle cx="500" cy="84" r="3" fill="#16a34a"/>
+              <circle cx="0" cy="70" r="3" fill="#ec4899"/>
+              <circle cx="41.7" cy="63" r="3" fill="#ec4899"/>
+              <circle cx="83.3" cy="49" r="3" fill="#ec4899"/>
+              <circle cx="125" cy="42" r="3" fill="#ec4899"/>
+              <circle cx="166.7" cy="28" r="3" fill="#ec4899"/>
+              <circle cx="208.3" cy="21" r="3" fill="#ec4899"/>
+              <circle cx="250" cy="14" r="3" fill="#ec4899"/>
+              <circle cx="291.7" cy="7" r="3" fill="#ec4899"/>
+              <circle cx="333.3" cy="14" r="3" fill="#ec4899"/>
+              <circle cx="375" cy="21" r="3" fill="#ec4899"/>
+              <circle cx="416.7" cy="28" r="3" fill="#ec4899"/>
+              <circle cx="458.3" cy="35" r="3" fill="#ec4899"/>
+              <circle cx="500" cy="42" r="3" fill="#ec4899"/>
+            </svg>
             <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9ca3af;">
               <span>00:00</span>
               <span>04:00</span>
@@ -918,9 +1032,9 @@
               <span>20:00</span>
             </div>
             <div style="width: 100%; display: flex; justify-content: flex-start; margin-top: 10px; font-size: 10px; color: #9ca3af;">
-              <span style="display: inline-block; width: 20px; height: 2px; background: #16a34a; margin-right: 5px; vertical-align: middle;"></span>
+              <span style="display: inline-block; width: 20px; height: 10px; background: #16a34a; margin-right: 5px; vertical-align: middle;"></span>
               <span>新增</span>
-              <span style="display: inline-block; width: 20px; height: 2px; background: #ec4899; margin: 0 5px 0 20px; vertical-align: middle;"></span>
+              <span style="display: inline-block; width: 20px; height: 10px; background: #ec4899; margin: 0 5px 0 20px; vertical-align: middle;"></span>
               <span>活跃</span>
             </div>
           </div>
@@ -931,13 +1045,14 @@
         <div class="card-block-header">
           <div>
             <div class="card-block-title">日内小时明细表</div>
-            <div class="card-block-sub">按小时汇总实时活跃、新增与付费数据，用于追踪关键时段表现。服务器/终端/国家维度可通过上方筛选条件控制。</div>
+            <div class="card-block-sub">按小时汇总实时活跃、新增与收入数据，用于追踪关键时段表现。服务器/终端/国家/有效维度可通过上方筛选条件控制。</div>
           </div>
         </div>
         <div class="table-placeholder" style="overflow-x: auto;">
-          <div class="table-header-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-header-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>时间（小时）</span>
             <span>活跃账号数</span>
+            <span>活跃设备数</span>
             <span>新增账号数</span>
             <span>每日总收入</span>
             <span>付费账号数</span>
@@ -948,9 +1063,10 @@
             <span>新增付费用户数</span>
             <span>首次付费用户数</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>00:00</span>
             <span>5,234</span>
+            <span>4,890</span>
             <span>120</span>
             <span>￥1,200</span>
             <span>89</span>
@@ -961,9 +1077,10 @@
             <span>23</span>
             <span>15</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>04:00</span>
             <span>3,120</span>
+            <span>2,950</span>
             <span>89</span>
             <span>￥850</span>
             <span>56</span>
@@ -974,9 +1091,10 @@
             <span>18</span>
             <span>12</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>08:00</span>
             <span>8,950</span>
+            <span>8,320</span>
             <span>456</span>
             <span>￥4,200</span>
             <span>345</span>
@@ -987,9 +1105,10 @@
             <span>123</span>
             <span>98</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>12:00</span>
             <span>15,678</span>
+            <span>14,520</span>
             <span>890</span>
             <span>￥12,500</span>
             <span>1,023</span>
@@ -1000,9 +1119,10 @@
             <span>345</span>
             <span>289</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>16:00</span>
             <span>18,900</span>
+            <span>17,450</span>
             <span>1,234</span>
             <span>￥18,750</span>
             <span>1,456</span>
@@ -1013,9 +1133,10 @@
             <span>456</span>
             <span>389</span>
           </div>
-          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 900px;">
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1000px;">
             <span>20:00</span>
             <span>22,345</span>
+            <span>20,680</span>
             <span>1,567</span>
             <span>￥25,600</span>
             <span>1,890</span>
@@ -1027,74 +1148,243 @@
             <span>489</span>
           </div>
           <div class="table-footnote">
-            说明：在数数里可用「表格」组件 + 维度（小时）+ 指标（活跃 / 新增 / 付费 等）实现，服务器/终端/国家可通过筛选条件控制。
+            说明：在数数里可用「表格」组件 + 维度（小时）+ 指标（活跃 / 新增 / 收入 等）实现，服务器/终端/国家/有效维度可通过筛选条件控制。
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 面板2：周 / 月运营报表 -->
+    <!-- 面板2：每日运营报表 -->
     <section class="panel" id="panel-period">
       <div class="panel-header">
         <div>
           <div class="panel-title">
-            <span>周 / 月运营报表</span>
-            <span class="panel-title-tag">对应：周报 / 月报（账号 / 设备 / 角色）</span>
+            <span>每日运营报表</span>
+            <span class="panel-title-tag">对应：日报（账号 / 设备 / 角色）</span>
           </div>
           <div class="panel-subtitle">
-            周对周、月对月观察 DAU / 新增 / 收入 / 付费率 等核心指标变化。
+            DAU / 新增 / 收入 / 付费率 等核心指标变化。
           </div>
         </div>
         <div class="panel-right-actions">
-          <div class="mini-tabs" id="periodTabs">
-            <div class="mini-tab active" data-type="week">周报</div>
-            <div class="mini-tab" data-type="month">月报</div>
-          </div>
           <button class="btn-ghost">导出报表</button>
         </div>
       </div>
 
       <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-label"><span>本周平均 DAU</span></div>
+          <div class="kpi-label"><span>今日平均 DAU</span></div>
           <div class="kpi-main">
-            <span class="kpi-value">26,500</span>
+            <span class="kpi-value">18,900</span>
             <span class="kpi-unit">人</span>
           </div>
           <div class="kpi-sub">
-            <span>较上周</span>
-            <span class="kpi-trend">+5.1%</span>
+            <span>较昨日</span>
+            <span class="kpi-trend">+2.1%</span>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label"><span>本周新增账号</span></div>
+          <div class="kpi-label"><span>今日新增账号</span></div>
           <div class="kpi-main">
-            <span class="kpi-value">9,800</span>
+            <span class="kpi-value">3,210</span>
             <span class="kpi-unit">个</span>
           </div>
           <div class="kpi-sub">
-            <span>较上周</span>
+            <span>较昨日</span>
             <span class="kpi-trend down">-1.8%</span>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label"><span>本周总付费金额</span></div>
+          <div class="kpi-label"><span>今日总付费金额</span></div>
           <div class="kpi-main">
-            <span class="kpi-value">￥420,000</span>
+            <span class="kpi-value">￥180,000</span>
           </div>
           <div class="kpi-sub">
-            <span>付费人数：6,200</span>
-            <span>ARPPU：￥67.7</span>
+            <span>付费人数：2,100</span>
+            <span>ARPPU：￥85.7</span>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label"><span>本周付费率</span></div>
+          <div class="kpi-label"><span>今日付费率</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">11.1%</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较昨日</span>
+            <span class="kpi-trend">+0.3pct</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">每日运营明细表</div>
+            <div class="card-block-sub">支持按 服务器 / 终端 / 国家 / 渠道 下钻查看</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>日期（天）</span>
+            <span>活跃账号数</span>
+            <span>活跃设备数</span>
+            <span>新增账号数</span>
+            <span>每日总收入</span>
+            <span>付费账号数</span>
+            <span>付费率</span>
+            <span>ARPU</span>
+            <span>ARPPU</span>
+            <span>付费活跃账号数</span>
+            <span>新增付费用户数</span>
+            <span>首次付费用户数</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-31</span>
+            <span>18,900</span>
+            <span>17,520</span>
+            <span>1,120</span>
+            <span>￥21,800</span>
+            <span>1,450</span>
+            <span>7.7%</span>
+            <span>￥1.15</span>
+            <span>￥15.0</span>
+            <span>1,450</span>
+            <span>450</span>
+            <span>375</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-30</span>
+            <span>17,650</span>
+            <span>16,410</span>
+            <span>1,080</span>
+            <span>￥20,500</span>
+            <span>1,380</span>
+            <span>7.8%</span>
+            <span>￥1.16</span>
+            <span>￥14.8</span>
+            <span>1,380</span>
+            <span>420</span>
+            <span>350</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-29</span>
+            <span>16,420</span>
+            <span>15,290</span>
+            <span>980</span>
+            <span>￥19,200</span>
+            <span>1,280</span>
+            <span>7.8%</span>
+            <span>￥1.17</span>
+            <span>￥15.0</span>
+            <span>1,280</span>
+            <span>390</span>
+            <span>320</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-28</span>
+            <span>15,200</span>
+            <span>14,120</span>
+            <span>890</span>
+            <span>￥17,800</span>
+            <span>1,220</span>
+            <span>8.0%</span>
+            <span>￥1.17</span>
+            <span>￥14.6</span>
+            <span>1,220</span>
+            <span>370</span>
+            <span>310</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-27</span>
+            <span>14,800</span>
+            <span>13,720</span>
+            <span>850</span>
+            <span>￥16,900</span>
+            <span>1,180</span>
+            <span>8.0%</span>
+            <span>￥1.14</span>
+            <span>￥14.3</span>
+            <span>1,180</span>
+            <span>350</span>
+            <span>290</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1100px;">
+            <span>2026-01-26</span>
+            <span>13,600</span>
+            <span>12,650</span>
+            <span>780</span>
+            <span>￥15,600</span>
+            <span>1,090</span>
+            <span>8.0%</span>
+            <span>￥1.14</span>
+            <span>￥14.3</span>
+            <span>1,090</span>
+            <span>320</span>
+            <span>270</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应指标生成此表。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板3：每周运营报表 -->
+    <section class="panel" id="panel-period-weekly">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>周运营报表</span>
+          </div>
+          <div class="panel-subtitle">
+            周对周 活跃 / 新增 / 收入 / 付费率 等核心指标变化。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label"><span>周活跃</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">130,200</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend">+1.8%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>周新增账号</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">7,850</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend down">-0.9%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>周总付费金额</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥1,260,000</span>
+          </div>
+          <div class="kpi-sub">
+            <span>付费人数：14,700</span>
+            <span>ARPPU：￥85.7</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>周付费率</span></div>
           <div class="kpi-main">
             <span class="kpi-value">11.3%</span>
           </div>
           <div class="kpi-sub">
             <span>较上周</span>
-            <span class="kpi-trend">+0.7pct</span>
+            <span class="kpi-trend">+0.1pct</span>
           </div>
         </div>
       </div>
@@ -1102,459 +1392,1167 @@
       <div class="card-block block-full">
         <div class="card-block-header">
           <div>
-            <div class="card-block-title">周 / 月核心指标对比</div>
-            <div class="card-block-sub">对应：周报 / 月报中的账号 / 设备 / 角色维度汇总</div>
-          </div>
-          <div class="card-block-tags">
-            <span class="tag tag-primary">组合图（柱 + 折线）</span>
-            <span class="tag">时间粒度：周 / 月</span>
-          </div>
-        </div>
-        <div class="chart-placeholder">
-          图表占位：按周（或月）展示 DAU、付费金额、付费率 等多指标组合图。
-        </div>
-      </div>
-
-      <div class="card-block block-full">
-        <div class="card-block-header">
-          <div>
-            <div class="card-block-title">周 / 月运营明细表</div>
+            <div class="card-block-title">周运营明细表</div>
             <div class="card-block-sub">支持按 服务器 / 终端 / 国家 / 渠道 下钻查看</div>
           </div>
         </div>
-        <div class="table-placeholder">
-          <div class="table-header-row">
-            <span>周 / 月 × 服务器 × 终端</span>
-            <span>平均 DAU</span>
-            <span>新增账号</span>
-            <span>总付费金额</span>
-            <span>付费率</span>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>日期（周）</span>
+            <span>周活跃账号数</span>
+            <span>周活跃设备数</span>
+            <span>周新增账号数</span>
+            <span>周总收入</span>
+            <span>周付费账号数</span>
+            <span>周付费率</span>
+            <span>周ARPU</span>
+            <span>周ARPPU</span>
+            <span>周付费活跃账号数</span>
+            <span>周新增付费用户数</span>
+            <span>周首次付费用户数</span>
           </div>
-          <div class="table-data-row">
-            <span>2026-W03 · 国服-1区 · Android</span>
-            <span>12,300</span>
-            <span>3,200</span>
-            <span>￥150,000</span>
-            <span>10.8%</span>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2026/01/25 - 2026/01/31</span>
+            <span>130,200</span>
+            <span>120,840</span>
+            <span>7,850</span>
+            <span>￥1,260,000</span>
+            <span>14,700</span>
+            <span>11.3%</span>
+            <span>￥9.68</span>
+            <span>￥85.7</span>
+            <span>14,700</span>
+            <span>3,120</span>
+            <span>2,625</span>
           </div>
-          <div class="table-data-row">
-            <span>2026-W03 · 国服-1区 · iOS</span>
-            <span>8,600</span>
-            <span>2,100</span>
-            <span>￥120,000</span>
-            <span>12.1%</span>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2026/01/18 - 2026/01/24</span>
+            <span>128,100</span>
+            <span>118,720</span>
+            <span>7,920</span>
+            <span>￥1,245,000</span>
+            <span>14,520</span>
+            <span>11.3%</span>
+            <span>￥9.72</span>
+            <span>￥85.8</span>
+            <span>14,520</span>
+            <span>3,080</span>
+            <span>2,590</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2026/01/11 - 2026/01/17</span>
+            <span>126,500</span>
+            <span>117,150</span>
+            <span>7,780</span>
+            <span>￥1,235,000</span>
+            <span>14,380</span>
+            <span>11.4%</span>
+            <span>￥9.78</span>
+            <span>￥85.9</span>
+            <span>14,380</span>
+            <span>3,040</span>
+            <span>2,560</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2026/01/04 - 2026/01/10</span>
+            <span>125,800</span>
+            <span>116,490</span>
+            <span>7,650</span>
+            <span>￥1,225,000</span>
+            <span>14,250</span>
+            <span>11.3%</span>
+            <span>￥9.77</span>
+            <span>￥86.0</span>
+            <span>14,250</span>
+            <span>3,010</span>
+            <span>2,530</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2025/12/28 - 2026/01/03</span>
+            <span>124,200</span>
+            <span>115,010</span>
+            <span>7,580</span>
+            <span>￥1,215,000</span>
+            <span>14,120</span>
+            <span>11.4%</span>
+            <span>￥9.79</span>
+            <span>￥86.0</span>
+            <span>14,120</span>
+            <span>2,980</span>
+            <span>2,510</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1300px;">
+            <span>2025/12/21 - 2025/12/27</span>
+            <span>122,600</span>
+            <span>113,520</span>
+            <span>7,450</span>
+            <span>￥1,205,000</span>
+            <span>14,000</span>
+            <span>11.4%</span>
+            <span>￥9.82</span>
+            <span>￥86.1</span>
+            <span>14,000</span>
+            <span>2,950</span>
+            <span>2,490</span>
           </div>
           <div class="table-footnote">
-            在数数中通过：时间（周 / 月） + 服务器 + 终端 等维度，组合相应指标生成此表。
+            在数数中通过：日期（周）+ 服务器 + 终端 等维度，组合相应指标生成此表。
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 面板3：留存 & 回流 & LTV -->
+    <!-- 面板 4：每月运营报表 -->
+    <section class="panel" id="panel-period-monthly">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>月运营报表</span>
+          </div>
+          <div class="panel-subtitle">
+            月对月 活跃 / 新增 / 收入 / 付费率 等核心指标变化。
+          </div>
+        </div>
+        <div class="panel-right-actions">
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label"><span>月活跃</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">568,000</span>
+            <span class="kpi-unit">人</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend">+3.2%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>月新增账号</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">34,500</span>
+            <span class="kpi-unit">个</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend down">-2.1%</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>月总付费金额</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">￥5,450,000</span>
+          </div>
+          <div class="kpi-sub">
+            <span>付费人数：65,000</span>
+            <span>ARPPU：￥83.8</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label"><span>月付费率</span></div>
+          <div class="kpi-main">
+            <span class="kpi-value">11.4%</span>
+          </div>
+          <div class="kpi-sub">
+            <span>较上周</span>
+            <span class="kpi-trend">+0.2pct</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block block-full">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">月运营明细表</div>
+            <div class="card-block-sub">支持按 服务器 / 终端 / 国家 / 渠道 下钻查看</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1200px;">
+            <span>日期（月）</span>
+            <span>月活跃账号数</span>
+            <span>月活跃设备数</span>
+            <span>月新增账号数</span>
+            <span>月总收入</span>
+            <span>月付费账号数</span>
+            <span>月付费率</span>
+            <span>月 ARPU</span>
+            <span>月 ARPPU</span>
+            <span>月付费活跃账号数</span>
+            <span>月新增付费用户数</span>
+            <span>月首次付费用户数</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1200px;">
+            <span>2026 年 2 月</span>
+            <span>568,000</span>
+            <span>527,640</span>
+            <span>34,500</span>
+            <span>￥5,450,000</span>
+            <span>65,000</span>
+            <span>11.4%</span>
+            <span>￥9.59</span>
+            <span>￥83.8</span>
+            <span>65,000</span>
+            <span>12,800</span>
+            <span>10,750</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1200px;">
+            <span>2026 年 1 月</span>
+            <span>550,000</span>
+            <span>510,700</span>
+            <span>35,200</span>
+            <span>￥5,280,000</span>
+            <span>63,500</span>
+            <span>11.5%</span>
+            <span>￥9.60</span>
+            <span>￥83.2</span>
+            <span>63,500</span>
+            <span>12,500</span>
+            <span>10,500</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; min-width: 1200px;">
+            <span>2025 年 12 月</span>
+            <span>535,000</span>
+            <span>496,800</span>
+            <span>34,800</span>
+            <span>￥5,120,000</span>
+            <span>62,000</span>
+            <span>11.6%</span>
+            <span>￥9.57</span>
+            <span>￥82.6</span>
+            <span>62,000</span>
+            <span>12,200</span>
+            <span>10,250</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期（月）+ 服务器 + 终端 等维度，组合相应指标生成此表。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 5：留存 -->
     <section class="panel" id="panel-retention">
       <div class="panel-header">
         <div>
           <div class="panel-title">
-            <span>留存 & 回流 & LTV 分析</span>
-            <span class="panel-title-tag">对应：留存 / 回流用户 / Ltv 模块（高优先级）</span>
+            <span>留存</span>
+            <span class="panel-title-tag">对应：新增用户留存数据</span>
           </div>
           <div class="panel-subtitle">
-            对每日新增、回流和付费用户进行留存与 LTV 视角的生命周期分析，支持账号 / 设备 / 角色口径切换。
-          </div>
-        </div>
-        <div class="panel-right-actions">
-          <div class="mini-tabs" id="retentionDimTabs">
-            <div class="mini-tab active" data-dim="account">账号</div>
-            <div class="mini-tab" data-dim="device">设备</div>
-            <div class="mini-tab" data-dim="role">角色</div>
+            对每日新增、每日新增付费用户、每日首次付费用户进行留存数据统计，支持不同账号维度统计结果。
           </div>
         </div>
       </div>
 
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label"><span>昨日新增账号</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">4,500</span>
-            <span class="kpi-unit">个</span>
-          </div>
-          <div class="kpi-sub">
-            <span>1 日留存</span>
-            <span class="kpi-trend">38.2%</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>昨日新增 7 日留存</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">22.5%</span>
-          </div>
-          <div class="kpi-sub">
-            <span>较上周同期</span>
-            <span class="kpi-trend">+1.3pct</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>昨日新增 30 日 LTV</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">￥16.8</span>
-          </div>
-          <div class="kpi-sub">
-            <span>新增付费率</span>
-            <span>4.5%</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>回流用户规模（近 7 日）</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">12,300</span>
-            <span class="kpi-unit">人</span>
-          </div>
-          <div class="kpi-sub">
-            <span>1 日回流留存</span>
-            <span>41.0%</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="block-row">
-        <div class="card-block">
-          <div class="card-block-header">
-            <div>
-              <div class="card-block-title">每日新增用户留存曲线</div>
-              <div class="card-block-sub">对应：每日新增用户留存-账号 / 设备 / 角色，支持 1~30 / 45 / 60 / 90 / 180 / 360 天</div>
-            </div>
-            <div class="card-block-tags">
-              <span class="tag tag-primary">多折线</span>
-              <span class="tag">留存率 × 天数</span>
-            </div>
-          </div>
-          <div class="chart-placeholder">
-            图表占位：新增用户按留存天数（1 / 3 / 7 / 14 / 30 / ...）的留存率曲线。
-          </div>
-        </div>
-        <div class="card-block">
-          <div class="card-block-header">
-            <div>
-              <div class="card-block-title">回流用户留存 & 付费留存</div>
-              <div class="card-block-sub">
-                对应：1 日回流用户留存（账号 / 设备 / 角色）+ 付费用户留存（新增付费角色）
-              </div>
-            </div>
-            <div class="card-block-tags">
-              <span class="tag tag-primary">分组柱状</span>
-              <span class="tag">回流 / 付费</span>
-            </div>
-          </div>
-          <div class="chart-placeholder">
-            图表占位：对比【新玩家】vs【回流玩家】vs【新增付费用户】在 D1 / D7 / D30 的留存表现。
-          </div>
-        </div>
-      </div>
-
+      <!-- 新增账号留存率 -->
       <div class="card-block block-full">
         <div class="card-block-header">
           <div>
-            <div class="card-block-title">新增用户 LTV 曲线</div>
-            <div class="card-block-sub">
-              对应：每日新增用户Ltv（账号 / 设备 / 角色）+ 1 日回流用户Ltv；可按 渠道 / 投放维度 分组。
-            </div>
-          </div>
-          <div class="card-block-tags">
-            <span class="tag tag-primary">折线图</span>
-            <span class="tag">累计 LTV × 天数</span>
+            <div class="card-block-title">新增账号留存率</div>
+            <div class="card-block-sub">按日期统计新增账号的留存表现</div>
           </div>
         </div>
-        <div class="chart-placeholder">
-          图表占位：按留存天数展示 LTV 累计曲线，可按渠道 / 终端拆线。
-        </div>
-      </div>
-
-      <div class="card-block block-full">
-        <div class="card-block-header">
-          <div>
-            <div class="card-block-title">不同付费区间用户留存情况</div>
-            <div class="card-block-sub">
-              对应：不同付费区间留存情况（白嫖 / 小R / 中R / 大R 等），用于观察高价值玩家活跃度。
-            </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>日期</span><span>新增账号数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>45留</span><span>60留</span><span>90留</span><span>120留</span><span>150留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
           </div>
-        </div>
-        <div class="table-placeholder">
-          <div class="table-header-row">
-            <span>付费区间</span>
-            <span>用户数占比</span>
-            <span>D7 留存</span>
-            <span>D30 留存</span>
-            <span>人均 LTV（30 天）</span>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/31</span><span>4,250</span><span>42.3%</span><span>31.5%</span><span>27.8%</span><span>25.1%</span><span>23.0%</span><span>21.3%</span><span>19.9%</span><span>18.6%</span><span>17.5%</span><span>16.6%</span><span>15.8%</span><span>15.1%</span><span>14.4%</span><span>13.8%</span><span>13.3%</span><span>12.8%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.4%</span><span>10.0%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>6.8%</span><span>5.5%</span><span>4.1%</span><span>3.2%</span><span>2.7%</span><span>2.3%</span><span>1.7%</span><span>1.2%</span><span>0.9%</span>
           </div>
-          <div class="table-data-row">
-            <span>白嫖（0 元）</span>
-            <span>72%</span>
-            <span>15.2%</span>
-            <span>8.6%</span>
-            <span>￥0</span>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/30</span><span>3,980</span><span>41.5%</span><span>30.8%</span><span>27.2%</span><span>24.5%</span><span>22.5%</span><span>20.8%</span><span>19.4%</span><span>18.2%</span><span>17.1%</span><span>16.2%</span><span>15.4%</span><span>14.7%</span><span>14.1%</span><span>13.5%</span><span>13.0%</span><span>12.5%</span><span>12.0%</span><span>11.6%</span><span>11.2%</span><span>10.8%</span><span>10.5%</span><span>10.1%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>6.7%</span><span>5.4%</span><span>4.0%</span><span>3.1%</span><span>2.6%</span><span>2.2%</span><span>1.6%</span><span>1.2%</span><span>0.9%</span>
           </div>
-          <div class="table-data-row">
-            <span>小 R（1~100 元）</span>
-            <span>18%</span>
-            <span>32.4%</span>
-            <span>19.5%</span>
-            <span>￥45</span>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/29</span><span>4,120</span><span>40.2%</span><span>29.8%</span><span>26.3%</span><span>23.7%</span><span>21.8%</span><span>20.1%</span><span>18.8%</span><span>17.6%</span><span>16.5%</span><span>15.6%</span><span>14.8%</span><span>14.1%</span><span>13.5%</span><span>12.9%</span><span>12.4%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.3%</span><span>10.0%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>7.8%</span><span>7.5%</span><span>6.3%</span><span>5.0%</span><span>3.7%</span><span>2.9%</span><span>2.4%</span><span>2.1%</span><span>1.5%</span><span>1.1%</span><span>0.8%</span>
           </div>
-          <div class="table-data-row">
-            <span>中 R（100~1000 元）</span>
-            <span>8%</span>
-            <span>48.6%</span>
-            <span>30.2%</span>
-            <span>￥280</span>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/28</span><span>4,350</span><span>43.1%</span><span>32.2%</span><span>28.5%</span><span>25.8%</span><span>23.7%</span><span>22.0%</span><span>20.5%</span><span>19.2%</span><span>18.1%</span><span>17.1%</span><span>16.3%</span><span>15.5%</span><span>14.8%</span><span>14.2%</span><span>13.6%</span><span>13.1%</span><span>12.6%</span><span>12.2%</span><span>11.8%</span><span>11.4%</span><span>11.0%</span><span>10.6%</span><span>10.3%</span><span>10.0%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>7.1%</span><span>5.7%</span><span>4.2%</span><span>3.3%</span><span>2.8%</span><span>2.4%</span><span>1.7%</span><span>1.3%</span><span>0.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/27</span><span>4,080</span><span>41.8%</span><span>31.0%</span><span>27.4%</span><span>24.7%</span><span>22.7%</span><span>21.0%</span><span>19.6%</span><span>18.4%</span><span>17.3%</span><span>16.4%</span><span>15.5%</span><span>14.8%</span><span>14.2%</span><span>13.6%</span><span>13.1%</span><span>12.6%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.2%</span><span>9.9%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>6.8%</span><span>5.4%</span><span>4.0%</span><span>3.1%</span><span>2.6%</span><span>2.2%</span><span>1.6%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/26</span><span>3,920</span><span>39.5%</span><span>29.2%</span><span>25.7%</span><span>23.2%</span><span>21.3%</span><span>19.7%</span><span>18.4%</span><span>17.2%</span><span>16.2%</span><span>15.3%</span><span>14.5%</span><span>13.8%</span><span>13.2%</span><span>12.6%</span><span>12.1%</span><span>11.7%</span><span>11.2%</span><span>10.8%</span><span>10.4%</span><span>10.1%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.4%</span><span>6.2%</span><span>4.9%</span><span>3.6%</span><span>2.8%</span><span>2.3%</span><span>2.0%</span><span>1.4%</span><span>1.0%</span><span>0.7%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/25</span><span>4,180</span><span>42.0%</span><span>31.3%</span><span>27.6%</span><span>24.9%</span><span>22.9%</span><span>21.2%</span><span>19.8%</span><span>18.5%</span><span>17.4%</span><span>16.5%</span><span>15.7%</span><span>15.0%</span><span>14.3%</span><span>13.7%</span><span>13.2%</span><span>12.7%</span><span>12.2%</span><span>11.8%</span><span>11.4%</span><span>11.0%</span><span>10.6%</span><span>10.3%</span><span>10.0%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.5%</span><span>8.2%</span><span>6.9%</span><span>5.5%</span><span>4.1%</span><span>3.2%</span><span>2.7%</span><span>2.3%</span><span>1.6%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/24</span><span>4,050</span><span>40.8%</span><span>30.2%</span><span>26.6%</span><span>24.0%</span><span>22.0%</span><span>20.4%</span><span>19.0%</span><span>17.8%</span><span>16.7%</span><span>15.8%</span><span>15.0%</span><span>14.3%</span><span>13.7%</span><span>13.1%</span><span>12.6%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.1%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>6.5%</span><span>5.2%</span><span>3.8%</span><span>3.0%</span><span>2.5%</span><span>2.1%</span><span>1.5%</span><span>1.1%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/23</span><span>3,890</span><span>39.8%</span><span>29.5%</span><span>26.0%</span><span>23.4%</span><span>21.5%</span><span>19.9%</span><span>18.5%</span><span>17.3%</span><span>16.3%</span><span>15.4%</span><span>14.6%</span><span>13.9%</span><span>13.3%</span><span>12.7%</span><span>12.2%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.1%</span><span>9.8%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>6.3%</span><span>5.0%</span><span>3.7%</span><span>2.9%</span><span>2.4%</span><span>2.0%</span><span>1.5%</span><span>1.1%</span><span>0.7%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/22</span><span>4,010</span><span>40.5%</span><span>30.0%</span><span>26.4%</span><span>23.8%</span><span>21.9%</span><span>20.2%</span><span>18.9%</span><span>17.7%</span><span>16.6%</span><span>15.7%</span><span>14.9%</span><span>14.2%</span><span>13.6%</span><span>13.0%</span><span>12.5%</span><span>12.0%</span><span>11.6%</span><span>11.2%</span><span>10.8%</span><span>10.4%</span><span>10.0%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>6.4%</span><span>5.1%</span><span>3.8%</span><span>2.9%</span><span>2.5%</span><span>2.1%</span><span>1.5%</span><span>1.1%</span><span>0.8%</span>
           </div>
           <div class="table-footnote">
-            在数数中，可通过「分段函数 / 区间聚合」方式，将付费金额划分为若干区间，再计算对应留存和 LTV 指标。
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应留存指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增设备留存率 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增设备留存率</div>
+            <div class="card-block-sub">按日期统计新增设备的留存表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>日期</span><span>新增设备数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>45留</span><span>60留</span><span>90留</span><span>120留</span><span>150留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/31</span><span>4,120</span><span>39.5%</span><span>29.6%</span><span>26.2%</span><span>23.7%</span><span>21.8%</span><span>20.2%</span><span>18.9%</span><span>17.8%</span><span>16.8%</span><span>16.0%</span><span>15.3%</span><span>14.7%</span><span>14.1%</span><span>13.6%</span><span>13.1%</span><span>12.7%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.4%</span><span>10.1%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>7.9%</span><span>6.6%</span><span>5.3%</span><span>3.9%</span><span>3.0%</span><span>2.5%</span><span>2.1%</span><span>1.5%</span><span>1.1%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/30</span><span>3,890</span><span>40.3%</span><span>30.2%</span><span>26.8%</span><span>24.3%</span><span>22.3%</span><span>20.7%</span><span>19.3%</span><span>18.2%</span><span>17.2%</span><span>16.3%</span><span>15.6%</span><span>15.0%</span><span>14.4%</span><span>13.8%</span><span>13.3%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.6%</span><span>11.2%</span><span>10.8%</span><span>10.5%</span><span>10.2%</span><span>9.9%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.0%</span><span>6.7%</span><span>5.4%</span><span>4.0%</span><span>3.1%</span><span>2.6%</span><span>2.2%</span><span>1.6%</span><span>1.2%</span><span>0.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/29</span><span>3,735</span><span>37.8%</span><span>28.1%</span><span>24.8%</span><span>22.4%</span><span>20.6%</span><span>19.1%</span><span>17.8%</span><span>16.7%</span><span>15.8%</span><span>15.0%</span><span>14.3%</span><span>13.7%</span><span>13.1%</span><span>12.6%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.1%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>5.8%</span><span>4.6%</span><span>3.4%</span><span>2.6%</span><span>2.2%</span><span>1.8%</span><span>1.3%</span><span>0.9%</span><span>0.6%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/28</span><span>4,212</span><span>41.5%</span><span>31.1%</span><span>27.5%</span><span>24.9%</span><span>22.9%</span><span>21.3%</span><span>19.8%</span><span>18.6%</span><span>17.6%</span><span>16.7%</span><span>16.0%</span><span>15.3%</span><span>14.7%</span><span>14.1%</span><span>13.6%</span><span>13.1%</span><span>12.7%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.4%</span><span>10.1%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>7.9%</span><span>6.6%</span><span>5.4%</span><span>4.0%</span><span>3.1%</span><span>2.6%</span><span>2.2%</span><span>1.6%</span><span>0.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/27</span><span>3,978</span><span>39.1%</span><span>29.2%</span><span>25.8%</span><span>23.3%</span><span>21.4%</span><span>19.9%</span><span>18.5%</span><span>17.4%</span><span>16.4%</span><span>15.6%</span><span>14.9%</span><span>14.2%</span><span>13.6%</span><span>13.1%</span><span>12.6%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.1%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>7.1%</span><span>5.9%</span><span>4.8%</span><span>3.5%</span><span>2.7%</span><span>2.3%</span><span>1.9%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/26</span><span>3,852</span><span>36.8%</span><span>27.3%</span><span>24.1%</span><span>21.7%</span><span>19.9%</span><span>18.5%</span><span>17.2%</span><span>16.1%</span><span>15.2%</span><span>14.4%</span><span>13.7%</span><span>13.1%</span><span>12.5%</span><span>12.0%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.3%</span><span>9.9%</span><span>9.5%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>6.7%</span><span>6.4%</span><span>6.1%</span><span>5.1%</span><span>4.1%</span><span>3.0%</span><span>2.3%</span><span>1.9%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/25</span><span>4,095</span><span>40.2%</span><span>30.0%</span><span>26.5%</span><span>24.0%</span><span>22.1%</span><span>20.5%</span><span>19.1%</span><span>18.0%</span><span>17.0%</span><span>16.2%</span><span>15.5%</span><span>14.8%</span><span>14.2%</span><span>13.7%</span><span>13.2%</span><span>12.7%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.3%</span><span>10.0%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>6.5%</span><span>5.2%</span><span>3.8%</span><span>2.9%</span><span>2.4%</span><span>2.0%</span><span>1.5%</span><span>1.1%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/24</span><span>3,970</span><span>38.8%</span><span>28.8%</span><span>25.4%</span><span>22.9%</span><span>21.0%</span><span>19.5%</span><span>18.1%</span><span>17.0%</span><span>16.1%</span><span>15.3%</span><span>14.6%</span><span>14.0%</span><span>13.4%</span><span>12.9%</span><span>12.4%</span><span>12.0%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.3%</span><span>9.9%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>7.8%</span><span>7.5%</span><span>7.2%</span><span>6.9%</span><span>5.7%</span><span>4.6%</span><span>3.4%</span><span>2.6%</span><span>2.2%</span><span>1.8%</span><span>1.3%</span><span>0.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/23</span><span>3,860</span><span>38.1%</span><span>28.3%</span><span>25.0%</span><span>22.6%</span><span>20.8%</span><span>19.3%</span><span>18.0%</span><span>16.9%</span><span>16.0%</span><span>15.2%</span><span>14.5%</span><span>13.9%</span><span>13.3%</span><span>12.8%</span><span>12.3%</span><span>11.8%</span><span>11.4%</span><span>11.0%</span><span>10.6%</span><span>10.2%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>7.1%</span><span>6.8%</span><span>5.6%</span><span>4.5%</span><span>3.3%</span><span>2.5%</span><span>2.1%</span><span>1.7%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/22</span><span>3,940</span><span>38.5%</span><span>28.6%</span><span>25.2%</span><span>22.8%</span><span>20.9%</span><span>19.4%</span><span>18.1%</span><span>17.0%</span><span>16.1%</span><span>15.3%</span><span>14.6%</span><span>14.0%</span><span>13.4%</span><span>12.9%</span><span>12.4%</span><span>11.9%</span><span>11.5%</span><span>11.1%</span><span>10.7%</span><span>10.3%</span><span>9.9%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>7.8%</span><span>7.5%</span><span>7.2%</span><span>6.9%</span><span>5.7%</span><span>4.6%</span><span>3.4%</span><span>2.6%</span><span>2.2%</span><span>1.8%</span><span>1.3%</span><span>0.9%</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应留存指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增付费用户留存率 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增付费用户留存率</div>
+            <div class="card-block-sub">按日期统计新增付费用户的留存表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>日期</span><span>新增付费账号数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>45留</span><span>60留</span><span>90留</span><span>120留</span><span>150留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/31</span><span>220</span><span>52.3%</span><span>42.1%</span><span>38.5%</span><span>35.2%</span><span>32.8%</span><span>30.5%</span><span>28.6%</span><span>26.9%</span><span>25.4%</span><span>24.1%</span><span>23.0%</span><span>22.0%</span><span>21.1%</span><span>20.3%</span><span>19.6%</span><span>18.9%</span><span>18.3%</span><span>17.7%</span><span>17.2%</span><span>16.7%</span><span>16.2%</span><span>15.8%</span><span>15.4%</span><span>15.0%</span><span>14.6%</span><span>14.2%</span><span>13.8%</span><span>13.5%</span><span>13.1%</span><span>12.8%</span><span>11.2%</span><span>9.5%</span><span>7.2%</span><span>5.6%</span><span>4.8%</span><span>4.0%</span><span>2.9%</span><span>2.1%</span><span>1.5%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/30</span><span>198</span><span>53.5%</span><span>43.2%</span><span>39.5%</span><span>36.1%</span><span>33.6%</span><span>31.3%</span><span>29.3%</span><span>27.5%</span><span>26.0%</span><span>24.6%</span><span>23.4%</span><span>22.4%</span><span>21.4%</span><span>20.6%</span><span>19.8%</span><span>19.1%</span><span>18.5%</span><span>17.9%</span><span>17.4%</span><span>16.9%</span><span>16.4%</span><span>15.9%</span><span>15.5%</span><span>15.1%</span><span>14.7%</span><span>14.3%</span><span>13.9%</span><span>13.5%</span><span>13.2%</span><span>12.8%</span><span>11.3%</span><span>9.6%</span><span>7.3%</span><span>5.7%</span><span>4.9%</span><span>4.1%</span><span>3.0%</span><span>2.2%</span><span>1.6%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/29</span><span>185</span><span>50.8%</span><span>40.8%</span><span>37.2%</span><span>34.0%</span><span>31.6%</span><span>29.4%</span><span>27.5%</span><span>25.8%</span><span>24.3%</span><span>23.0%</span><span>21.9%</span><span>20.9%</span><span>20.0%</span><span>19.2%</span><span>18.5%</span><span>17.8%</span><span>17.2%</span><span>16.7%</span><span>16.2%</span><span>15.7%</span><span>15.2%</span><span>14.8%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.5%</span><span>12.1%</span><span>11.8%</span><span>10.4%</span><span>8.8%</span><span>6.6%</span><span>5.1%</span><span>4.4%</span><span>3.7%</span><span>2.6%</span><span>1.9%</span><span>1.3%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/28</span><span>235</span><span>54.9%</span><span>44.4%</span><span>40.6%</span><span>37.1%</span><span>34.5%</span><span>32.1%</span><span>30.0%</span><span>28.2%</span><span>26.6%</span><span>25.2%</span><span>24.0%</span><span>22.9%</span><span>21.9%</span><span>21.0%</span><span>20.2%</span><span>19.5%</span><span>18.8%</span><span>18.2%</span><span>17.7%</span><span>17.2%</span><span>16.7%</span><span>16.2%</span><span>15.8%</span><span>15.4%</span><span>15.0%</span><span>14.6%</span><span>14.2%</span><span>13.8%</span><span>13.4%</span><span>13.1%</span><span>11.2%</span><span>9.6%</span><span>7.3%</span><span>5.7%</span><span>4.9%</span><span>4.1%</span><span>3.0%</span><span>2.2%</span><span>1.5%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/27</span><span>205</span><span>51.7%</span><span>41.6%</span><span>38.0%</span><span>34.7%</span><span>32.2%</span><span>30.0%</span><span>28.0%</span><span>26.3%</span><span>24.8%</span><span>23.5%</span><span>22.3%</span><span>21.3%</span><span>20.4%</span><span>19.6%</span><span>18.8%</span><span>18.1%</span><span>17.5%</span><span>17.0%</span><span>16.5%</span><span>16.0%</span><span>15.5%</span><span>15.1%</span><span>14.7%</span><span>14.3%</span><span>13.9%</span><span>13.5%</span><span>13.1%</span><span>12.8%</span><span>12.4%</span><span>10.3%</span><span>8.8%</span><span>6.7%</span><span>5.2%</span><span>4.5%</span><span>3.7%</span><span>2.7%</span><span>1.9%</span><span>1.3%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/26</span><span>178</span><span>49.4%</span><span>39.6%</span><span>36.1%</span><span>32.9%</span><span>30.5%</span><span>28.4%</span><span>26.5%</span><span>24.8%</span><span>23.4%</span><span>22.1%</span><span>21.0%</span><span>20.1%</span><span>19.2%</span><span>18.4%</span><span>17.6%</span><span>17.0%</span><span>16.4%</span><span>15.9%</span><span>15.4%</span><span>14.9%</span><span>14.5%</span><span>14.1%</span><span>13.7%</span><span>13.3%</span><span>12.9%</span><span>12.5%</span><span>12.1%</span><span>11.8%</span><span>11.4%</span><span>9.4%</span><span>8.0%</span><span>6.0%</span><span>4.6%</span><span>4.0%</span><span>3.3%</span><span>2.4%</span><span>1.8%</span><span>1.3%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/25</span><span>228</span><span>53.1%</span><span>42.8%</span><span>39.1%</span><span>35.7%</span><span>33.2%</span><span>30.9%</span><span>28.9%</span><span>27.1%</span><span>25.6%</span><span>24.2%</span><span>23.0%</span><span>22.0%</span><span>21.0%</span><span>20.2%</span><span>19.4%</span><span>18.7%</span><span>18.1%</span><span>17.5%</span><span>17.0%</span><span>16.5%</span><span>16.0%</span><span>15.6%</span><span>15.2%</span><span>14.8%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.9%</span><span>10.7%</span><span>9.2%</span><span>7.0%</span><span>5.4%</span><span>4.6%</span><span>3.9%</span><span>2.8%</span><span>2.0%</span><span>1.5%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/24</span><span>210</span><span>52.4%</span><span>42.2%</span><span>38.5%</span><span>35.2%</span><span>32.7%</span><span>30.4%</span><span>28.4%</span><span>26.7%</span><span>25.2%</span><span>23.8%</span><span>22.7%</span><span>21.7%</span><span>20.7%</span><span>19.9%</span><span>19.1%</span><span>18.5%</span><span>17.9%</span><span>17.3%</span><span>16.8%</span><span>16.3%</span><span>15.8%</span><span>15.4%</span><span>15.0%</span><span>14.6%</span><span>14.2%</span><span>13.8%</span><span>13.4%</span><span>13.0%</span><span>12.7%</span><span>10.5%</span><span>9.0%</span><span>6.8%</span><span>5.3%</span><span>4.6%</span><span>3.8%</span><span>2.7%</span><span>2.0%</span><span>1.4%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/23</span><span>195</span><span>51.3%</span><span>41.2%</span><span>37.6%</span><span>34.3%</span><span>31.9%</span><span>29.6%</span><span>27.7%</span><span>26.0%</span><span>24.5%</span><span>23.2%</span><span>22.1%</span><span>21.1%</span><span>20.2%</span><span>19.4%</span><span>18.6%</span><span>18.0%</span><span>17.4%</span><span>16.8%</span><span>16.3%</span><span>15.8%</span><span>15.3%</span><span>14.9%</span><span>14.5%</span><span>14.1%</span><span>13.7%</span><span>13.3%</span><span>12.9%</span><span>12.5%</span><span>12.2%</span><span>10.1%</span><span>8.6%</span><span>6.5%</span><span>5.0%</span><span>4.3%</span><span>3.6%</span><span>2.6%</span><span>1.8%</span><span>1.3%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/22</span><span>202</span><span>51.9%</span><span>41.7%</span><span>38.1%</span><span>34.8%</span><span>32.3%</span><span>30.0%</span><span>28.1%</span><span>26.4%</span><span>24.9%</span><span>23.6%</span><span>22.4%</span><span>21.4%</span><span>20.5%</span><span>19.7%</span><span>18.9%</span><span>18.3%</span><span>17.7%</span><span>17.1%</span><span>16.6%</span><span>16.1%</span><span>15.6%</span><span>15.2%</span><span>14.8%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.5%</span><span>10.3%</span><span>8.8%</span><span>6.7%</span><span>5.2%</span><span>4.4%</span><span>3.7%</span><span>2.7%</span><span>1.9%</span><span>1.4%</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应留存指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 首次付费用户留存率 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">首次付费用户留存率</div>
+            <div class="card-block-sub">按日期统计首次付费用户的留存表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>日期</span><span>首次付费账号数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>45留</span><span>60留</span><span>90留</span><span>120留</span><span>150留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/31</span><span>185</span><span>48.6%</span><span>38.5%</span><span>35.0%</span><span>31.8%</span><span>29.4%</span><span>27.2%</span><span>25.3%</span><span>23.7%</span><span>22.3%</span><span>21.1%</span><span>20.0%</span><span>19.1%</span><span>18.2%</span><span>17.4%</span><span>16.7%</span><span>16.1%</span><span>15.5%</span><span>15.0%</span><span>14.5%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.7%</span><span>11.3%</span><span>11.0%</span><span>10.6%</span><span>9.0%</span><span>7.5%</span><span>5.6%</span><span>4.3%</span><span>3.6%</span><span>3.0%</span><span>2.2%</span><span>1.5%</span><span>1.1%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/30</span><span>168</span><span>49.7%</span><span>39.5%</span><span>36.0%</span><span>32.7%</span><span>30.3%</span><span>28.0%</span><span>26.1%</span><span>24.4%</span><span>23.0%</span><span>21.8%</span><span>20.7%</span><span>19.7%</span><span>18.8%</span><span>18.0%</span><span>17.3%</span><span>16.6%</span><span>16.0%</span><span>15.5%</span><span>15.0%</span><span>14.5%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.6%</span><span>11.3%</span><span>10.9%</span><span>8.9%</span><span>7.5%</span><span>5.6%</span><span>4.3%</span><span>3.7%</span><span>3.1%</span><span>2.2%</span><span>1.6%</span><span>1.1%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/29</span><span>155</span><span>47.1%</span><span>37.2%</span><span>33.8%</span><span>30.7%</span><span>28.4%</span><span>26.3%</span><span>24.5%</span><span>22.9%</span><span>21.6%</span><span>20.4%</span><span>19.4%</span><span>18.5%</span><span>17.6%</span><span>16.8%</span><span>16.1%</span><span>15.5%</span><span>14.9%</span><span>14.4%</span><span>13.9%</span><span>13.4%</span><span>13.0%</span><span>12.6%</span><span>12.2%</span><span>11.8%</span><span>11.4%</span><span>11.0%</span><span>10.7%</span><span>10.3%</span><span>8.1%</span><span>6.8%</span><span>5.1%</span><span>3.9%</span><span>3.3%</span><span>2.8%</span><span>2.0%</span><span>1.4%</span><span>1.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/28</span><span>198</span><span>51.0%</span><span>40.6%</span><span>37.0%</span><span>33.7%</span><span>31.2%</span><span>28.9%</span><span>26.9%</span><span>25.2%</span><span>23.8%</span><span>22.5%</span><span>21.4%</span><span>20.4%</span><span>19.5%</span><span>18.7%</span><span>17.9%</span><span>17.2%</span><span>16.6%</span><span>16.1%</span><span>15.6%</span><span>15.1%</span><span>14.6%</span><span>14.2%</span><span>13.8%</span><span>13.4%</span><span>13.0%</span><span>12.6%</span><span>12.2%</span><span>11.8%</span><span>11.5%</span><span>9.1%</span><span>7.7%</span><span>5.8%</span><span>4.5%</span><span>3.8%</span><span>3.2%</span><span>2.3%</span><span>1.7%</span><span>1.2%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/27</span><span>175</span><span>48.0%</span><span>38.0%</span><span>34.5%</span><span>31.4%</span><span>29.0%</span><span>26.9%</span><span>25.0%</span><span>23.4%</span><span>22.1%</span><span>20.9%</span><span>19.9%</span><span>18.9%</span><span>18.1%</span><span>17.3%</span><span>16.6%</span><span>16.0%</span><span>15.4%</span><span>14.9%</span><span>14.4%</span><span>13.9%</span><span>13.5%</span><span>13.1%</span><span>12.7%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.2%</span><span>10.8%</span><span>8.3%</span><span>7.0%</span><span>5.2%</span><span>4.0%</span><span>3.4%</span><span>2.9%</span><span>2.1%</span><span>1.5%</span><span>1.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/26</span><span>148</span><span>45.9%</span><span>36.2%</span><span>32.9%</span><span>29.8%</span><span>27.5%</span><span>25.5%</span><span>23.7%</span><span>22.2%</span><span>20.9%</span><span>19.8%</span><span>18.8%</span><span>17.9%</span><span>17.1%</span><span>16.3%</span><span>15.6%</span><span>15.0%</span><span>14.4%</span><span>13.9%</span><span>13.4%</span><span>12.9%</span><span>12.5%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.2%</span><span>9.8%</span><span>7.4%</span><span>6.2%</span><span>4.6%</span><span>3.5%</span><span>3.0%</span><span>2.5%</span><span>1.8%</span><span>1.2%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/25</span><span>192</span><span>49.5%</span><span>39.3%</span><span>35.8%</span><span>32.5%</span><span>30.1%</span><span>27.9%</span><span>26.0%</span><span>24.3%</span><span>22.9%</span><span>21.7%</span><span>20.6%</span><span>19.6%</span><span>18.7%</span><span>17.9%</span><span>17.2%</span><span>16.5%</span><span>15.9%</span><span>15.4%</span><span>14.9%</span><span>14.4%</span><span>13.9%</span><span>13.5%</span><span>13.1%</span><span>12.7%</span><span>12.3%</span><span>11.9%</span><span>11.5%</span><span>11.2%</span><span>8.3%</span><span>7.0%</span><span>5.2%</span><span>4.0%</span><span>3.4%</span><span>2.9%</span><span>2.1%</span><span>1.5%</span><span>1.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/24</span><span>178</span><span>48.9%</span><span>38.7%</span><span>35.2%</span><span>32.0%</span><span>29.6%</span><span>27.4%</span><span>25.5%</span><span>23.9%</span><span>22.5%</span><span>21.3%</span><span>20.2%</span><span>19.2%</span><span>18.4%</span><span>17.6%</span><span>16.9%</span><span>16.2%</span><span>15.6%</span><span>15.1%</span><span>14.6%</span><span>14.1%</span><span>13.7%</span><span>13.3%</span><span>12.9%</span><span>12.5%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>11.0%</span><span>8.1%</span><span>6.8%</span><span>5.1%</span><span>3.9%</span><span>3.3%</span><span>2.8%</span><span>2.0%</span><span>1.4%</span><span>1.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/23</span><span>165</span><span>47.6%</span><span>37.6%</span><span>34.2%</span><span>31.1%</span><span>28.7%</span><span>26.6%</span><span>24.8%</span><span>23.2%</span><span>21.9%</span><span>20.7%</span><span>19.7%</span><span>18.8%</span><span>17.9%</span><span>17.1%</span><span>16.4%</span><span>15.8%</span><span>15.2%</span><span>14.7%</span><span>14.2%</span><span>13.7%</span><span>13.3%</span><span>12.9%</span><span>12.5%</span><span>12.1%</span><span>11.7%</span><span>11.3%</span><span>11.0%</span><span>10.6%</span><span>8.0%</span><span>6.8%</span><span>5.0%</span><span>3.9%</span><span>3.3%</span><span>2.8%</span><span>2.0%</span><span>1.4%</span><span>0.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2940px;">
+            <span>2026/1/22</span><span>172</span><span>48.2%</span><span>38.2%</span><span>34.7%</span><span>31.6%</span><span>29.2%</span><span>27.0%</span><span>25.2%</span><span>23.6%</span><span>22.2%</span><span>21.0%</span><span>20.0%</span><span>19.0%</span><span>18.2%</span><span>17.4%</span><span>16.7%</span><span>16.1%</span><span>15.5%</span><span>15.0%</span><span>14.5%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.6%</span><span>11.2%</span><span>10.9%</span><span>8.3%</span><span>6.9%</span><span>5.2%</span><span>4.0%</span><span>3.4%</span><span>2.9%</span><span>2.1%</span><span>1.4%</span><span>1.0%</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应留存指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增角色留存率 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增角色留存率</div>
+            <div class="card-block-sub">按日期统计新增角色的留存表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>日期</span><span>新增角色创建数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>60留</span><span>90留</span><span>120留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/31</span><span>8,950</span><span>35.2%</span><span>26.1%</span><span>23.0%</span><span>20.7%</span><span>19.0%</span><span>17.6%</span><span>16.4%</span><span>15.4%</span><span>14.5%</span><span>13.8%</span><span>13.2%</span><span>12.6%</span><span>12.1%</span><span>11.6%</span><span>11.2%</span><span>10.8%</span><span>10.4%</span><span>10.0%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>6.7%</span><span>6.4%</span><span>4.0%</span><span>2.9%</span><span>2.2%</span><span>1.5%</span><span>1.0%</span><span>0.7%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/30</span><span>8,480</span><span>36.1%</span><span>26.8%</span><span>23.6%</span><span>21.3%</span><span>19.5%</span><span>18.1%</span><span>16.9%</span><span>15.8%</span><span>14.9%</span><span>14.2%</span><span>13.5%</span><span>12.9%</span><span>12.4%</span><span>11.9%</span><span>11.4%</span><span>11.0%</span><span>10.6%</span><span>10.2%</span><span>9.9%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>7.8%</span><span>7.5%</span><span>7.2%</span><span>6.9%</span><span>6.6%</span><span>4.1%</span><span>3.0%</span><span>2.3%</span><span>1.6%</span><span>1.1%</span><span>0.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/29</span><span>8,150</span><span>33.6%</span><span>24.8%</span><span>21.8%</span><span>19.6%</span><span>18.0%</span><span>16.7%</span><span>15.5%</span><span>14.5%</span><span>13.7%</span><span>13.0%</span><span>12.3%</span><span>11.8%</span><span>11.3%</span><span>10.8%</span><span>10.3%</span><span>9.9%</span><span>9.5%</span><span>9.2%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>6.7%</span><span>6.4%</span><span>6.1%</span><span>5.8%</span><span>3.4%</span><span>2.5%</span><span>1.9%</span><span>1.3%</span><span>0.9%</span><span>0.6%</span><span>0.4%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/28</span><span>9,200</span><span>37.2%</span><span>27.7%</span><span>24.4%</span><span>22.0%</span><span>20.2%</span><span>18.7%</span><span>17.4%</span><span>16.3%</span><span>15.4%</span><span>14.6%</span><span>13.9%</span><span>13.3%</span><span>12.8%</span><span>12.3%</span><span>11.8%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.2%</span><span>9.8%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>7.1%</span><span>4.2%</span><span>3.1%</span><span>2.4%</span><span>1.7%</span><span>1.2%</span><span>0.8%</span><span>0.6%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/27</span><span>8,700</span><span>34.9%</span><span>25.8%</span><span>22.7%</span><span>20.4%</span><span>18.7%</span><span>17.3%</span><span>16.1%</span><span>15.1%</span><span>14.2%</span><span>13.5%</span><span>12.8%</span><span>12.3%</span><span>11.8%</span><span>11.3%</span><span>10.8%</span><span>10.4%</span><span>10.0%</span><span>9.6%</span><span>9.3%</span><span>9.0%</span><span>8.7%</span><span>8.4%</span><span>8.1%</span><span>7.8%</span><span>7.5%</span><span>7.2%</span><span>6.9%</span><span>6.6%</span><span>3.6%</span><span>2.6%</span><span>2.0%</span><span>1.4%</span><span>1.0%</span><span>0.7%</span><span>0.4%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/26</span><span>8,420</span><span>32.8%</span><span>24.2%</span><span>21.2%</span><span>19.1%</span><span>17.5%</span><span>16.2%</span><span>15.1%</span><span>14.1%</span><span>13.3%</span><span>12.6%</span><span>12.0%</span><span>11.4%</span><span>10.9%</span><span>10.5%</span><span>10.0%</span><span>9.6%</span><span>9.2%</span><span>8.9%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>6.7%</span><span>6.4%</span><span>6.1%</span><span>5.8%</span><span>3.0%</span><span>2.2%</span><span>1.7%</span><span>1.2%</span><span>0.8%</span><span>0.5%</span><span>0.3%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/25</span><span>8,950</span><span>35.9%</span><span>26.7%</span><span>23.5%</span><span>21.2%</span><span>19.4%</span><span>18.0%</span><span>16.8%</span><span>15.7%</span><span>14.8%</span><span>14.0%</span><span>13.4%</span><span>12.8%</span><span>12.3%</span><span>11.8%</span><span>11.3%</span><span>10.9%</span><span>10.5%</span><span>10.1%</span><span>9.7%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>3.7%</span><span>2.7%</span><span>2.1%</span><span>1.5%</span><span>1.0%</span><span>0.7%</span><span>0.5%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/24</span><span>8,680</span><span>34.6%</span><span>25.6%</span><span>22.5%</span><span>20.3%</span><span>18.6%</span><span>17.2%</span><span>16.0%</span><span>15.0%</span><span>14.1%</span><span>13.4%</span><span>12.8%</span><span>12.2%</span><span>11.7%</span><span>11.2%</span><span>10.7%</span><span>10.3%</span><span>9.9%</span><span>9.5%</span><span>9.2%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>7.1%</span><span>6.8%</span><span>6.5%</span><span>3.5%</span><span>2.5%</span><span>1.9%</span><span>1.3%</span><span>0.9%</span><span>0.6%</span><span>0.4%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/23</span><span>8,430</span><span>33.9%</span><span>25.0%</span><span>22.0%</span><span>19.8%</span><span>18.2%</span><span>16.8%</span><span>15.6%</span><span>14.6%</span><span>13.8%</span><span>13.1%</span><span>12.4%</span><span>11.9%</span><span>11.4%</span><span>10.9%</span><span>10.5%</span><span>10.0%</span><span>9.6%</span><span>9.3%</span><span>8.9%</span><span>8.6%</span><span>8.3%</span><span>8.0%</span><span>7.7%</span><span>7.4%</span><span>7.1%</span><span>6.8%</span><span>6.5%</span><span>6.2%</span><span>3.3%</span><span>2.4%</span><span>1.8%</span><span>1.2%</span><span>0.8%</span><span>0.5%</span><span>0.3%</span><span></span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(38, minmax(70px, 1fr)); min-width: 2600px;">
+            <span>2026/1/22</span><span>8,590</span><span>34.3%</span><span>25.4%</span><span>22.3%</span><span>20.1%</span><span>18.4%</span><span>17.0%</span><span>15.8%</span><span>14.8%</span><span>14.0%</span><span>13.2%</span><span>12.6%</span><span>12.0%</span><span>11.5%</span><span>11.0%</span><span>10.6%</span><span>10.2%</span><span>9.8%</span><span>9.4%</span><span>9.1%</span><span>8.8%</span><span>8.5%</span><span>8.2%</span><span>7.9%</span><span>7.6%</span><span>7.3%</span><span>7.0%</span><span>6.7%</span><span>6.4%</span><span>3.4%</span><span>2.5%</span><span>1.9%</span><span>1.3%</span><span>0.9%</span><span>0.6%</span><span>0.4%</span><span></span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应留存指标生成此表。
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 面板4：付费 & 商城 & 广告 -->
-    <section class="panel" id="panel-pay">
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">
-            <span>付费 & 商城 & 广告收入分析</span>
-            <span class="panel-title-tag">对应：付费整体 / 商品 / 首充 / 广告 / 购买偏好</span>
-          </div>
-          <div class="panel-subtitle">
-            综合观察整体付费表现、充值商品购买分布、首充（破冰付费），以及广告收入和不同玩家群体的购买偏好。
-          </div>
-        </div>
-        <div class="panel-right-actions">
-          <button class="btn-ghost">导出付费明细</button>
-        </div>
-      </div>
 
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label"><span>选定周期总付费金额</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">￥1,280,000</span>
-          </div>
-          <div class="kpi-sub">
-            <span>付费人数：12,400</span>
-            <span>订单数：32,100</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>ARPU / ARPPU</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">ARPU ￥18.6</span>
-          </div>
-          <div class="kpi-sub">
-            <span>ARPPU</span>
-            <span>￥103.2</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>首充用户数 & 金额</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">3,200</span>
-            <span class="kpi-unit">人</span>
-          </div>
-          <div class="kpi-sub">
-            <span>首充金额</span>
-            <span>￥96,000</span>
-          </div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label"><span>广告收入</span></div>
-          <div class="kpi-main">
-            <span class="kpi-value">￥220,000</span>
-          </div>
-          <div class="kpi-sub">
-            <span>广告占总收入</span>
-            <span>17.2%</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="block-row">
-        <div class="card-block">
-          <div class="card-block-header">
-            <div>
-              <div class="card-block-title">整体付费趋势（金额 / 人数 / 付费率）</div>
-              <div class="card-block-sub">对应：付费整体表现-总额 / 付费用户 / ARPU 等</div>
-            </div>
-            <div class="card-block-tags">
-              <span class="tag tag-primary">组合图</span>
-              <span class="tag">日期 × 金额 / 人数 / 付费率</span>
-            </div>
-          </div>
-          <div class="chart-placeholder">
-            图表占位：按日期展示总付费金额（柱形）+ 付费人数（折线）+ 付费率（次轴折线）。
-          </div>
-        </div>
-        <div class="card-block">
-          <div class="card-block-header">
-            <div>
-              <div class="card-block-title">充值商品购买 TopN</div>
-              <div class="card-block-sub">对应：充值商品购买数据 + 网页商城相关</div>
-            </div>
-            <div class="card-block-tags">
-              <span class="tag tag-primary">TopN 柱状</span>
-              <span class="tag">商品 ID / 名称</span>
-            </div>
-          </div>
-          <div class="chart-placeholder">
-            图表占位：展示 Top10 充值商品的购买次数 / 购买人数 / 金额占比，可按「网页商城 / 内购」分组。
-          </div>
-        </div>
-      </div>
-
-      <div class="card-block block-full">
-        <div class="card-block-header">
-          <div>
-            <div class="card-block-title">破冰付费（首充路径 & 商品偏好）</div>
-            <div class="card-block-sub">对应：破冰付费-首充购买商品 + 购买偏好 / 投放用户购买偏好</div>
-          </div>
-        </div>
-        <div class="table-placeholder">
-          <div class="table-header-row">
-            <span>首充商品 / 区间</span>
-            <span>首充玩家占比</span>
-            <span>来自投放用户占比</span>
-            <span>D7 付费留存</span>
-            <span>后续 30 天 LTV</span>
-          </div>
-          <div class="table-data-row">
-            <span>首充礼包-6 元</span>
-            <span>58%</span>
-            <span>65%</span>
-            <span>42%</span>
-            <span>￥72</span>
-          </div>
-          <div class="table-data-row">
-            <span>首充礼包-30 元</span>
-            <span>28%</span>
-            <span>22%</span>
-            <span>55%</span>
-            <span>￥160</span>
-          </div>
-          <div class="table-data-row">
-            <span>其他首充商品</span>
-            <span>14%</span>
-            <span>13%</span>
-            <span>38%</span>
-            <span>￥95</span>
-          </div>
-          <div class="table-footnote">
-            可通过「首单付费商品」+「是否投放用户」等维度，构建首充路径 / 偏好分析视图。
-          </div>
-        </div>
-      </div>
-
-      <div class="card-block block-full">
-        <div class="card-block-header">
-          <div>
-            <div class="card-block-title">广告收入分布</div>
-            <div class="card-block-sub">对应：广告收入相关（按广告位 / 渠道 / 国家等维度）</div>
-          </div>
-          <div class="card-block-tags">
-            <span class="tag tag-primary">堆叠柱状</span>
-            <span class="tag">广告位 × 收入</span>
-          </div>
-        </div>
-        <div class="chart-placeholder">
-          图表占位：按广告位 / 场景 / 国家拆分广告收入，并对比内购收入占比。
-        </div>
-      </div>
-    </section>
-
-    <!-- 面板5：转化漏斗 & 投放 -->
+    <!-- 面板 6：转化率漏斗 -->
     <section class="panel" id="panel-funnel">
       <div class="panel-header">
         <div>
           <div class="panel-title">
-            <span>转化漏斗 & 投放效果</span>
-            <span class="panel-title-tag">对应：创角前 / 后行为漏斗 + 投放漏斗 + 投放留存 / LTV</span>
+            <span>转化率漏斗</span>
+            <span class="panel-title-tag">对应：创角前 / 创角后 / 投放转化漏斗</span>
           </div>
           <div class="panel-subtitle">
-            从曝光 / 点击 / 安装 / 首启 / 创角 / 等级节点 / 首充，全链路评估投放与自然量的转化表现。
+            分析用户从曝光到付费的转化路径，识别关键流失环节。
           </div>
         </div>
-        <div class="panel-right-actions">
-          <button class="btn-ghost">切换到投放维度视图</button>
-        </div>
       </div>
-
       <div class="block-row">
         <div class="card-block">
           <div class="card-block-header">
             <div>
-              <div class="card-block-title">创角前漏斗（曝光 → 点击 → 安装 → 首启）</div>
-              <div class="card-block-sub">对应：关键步骤确认-创角前，可按 渠道 / Campaign / 终端 / 国家 查看</div>
+              <div class="card-block-title">创角前转化漏斗</div>
+              <div class="card-block-sub">从广告曝光到下载到创角的转化</div>
             </div>
             <div class="card-block-tags">
               <span class="tag tag-primary">漏斗图</span>
-              <span class="tag">投放前链路</span>
             </div>
           </div>
           <div class="chart-placeholder">
-            图表占位：标准投放转化漏斗，展示每一步的转化率和流失率。
+            图表占位：创角前转化漏斗 - 曝光→点击→下载→启动→创角
           </div>
         </div>
         <div class="card-block">
           <div class="card-block-header">
             <div>
-              <div class="card-block-title">创角后行为漏斗（创角 → 等级 / 关卡 → 首付）</div>
-              <div class="card-block-sub">对应：创角 / 等级 / 是否付费等-创角后；可用关卡通过率细分。</div>
+              <div class="card-block-title">创角后转化漏斗</div>
+              <div class="card-block-sub">从创角到付费的转化</div>
             </div>
             <div class="card-block-tags">
               <span class="tag tag-primary">漏斗图</span>
-              <span class="tag">创角后关键行为</span>
             </div>
           </div>
           <div class="chart-placeholder">
-            图表占位：创角 → 完成新手引导 → 通过第 X 关 → 达到 Y 级 → 首充，展示各步骤流失。
+            图表占位：创角后转化漏斗 - 创角→新手引导→关卡1→首次付费
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">投放转化漏斗</div>
+              <div class="card-block-sub">按投放渠道的转化分析</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">条形图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各投放渠道转化率对比
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 面板 7：Ltv -->
+    <section class="panel" id="panel-ltv">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>Ltv</span>
+            <span class="panel-title-tag">对应：新增用户Ltv数据</span>
+          </div>
+          <div class="panel-subtitle">
+            对每日新增、每日新增付费用户、每日首次付费用户进行Ltv数据统计，支持不同账号维度统计结果。
           </div>
         </div>
       </div>
 
+      <!-- 新增账号Ltv -->
       <div class="card-block block-full">
         <div class="card-block-header">
           <div>
-            <div class="card-block-title">投放维度转化 & 留存 / LTV 概览</div>
-            <div class="card-block-sub">
-              对应：基于投放统计维度的转化率漏斗 / 新增留存 / 新增 Ltv，用于对比不同渠道 / Campaign 质量。
-            </div>
-          </div>
-          <div class="card-block-tags">
-            <span class="tag tag-primary">矩阵表</span>
-            <span class="tag">渠道 × 投放单元</span>
+            <div class="card-block-title">新增账号Ltv</div>
+            <div class="card-block-sub">按日期统计新增账号的Ltv表现</div>
           </div>
         </div>
-        <div class="table-placeholder">
-          <div class="table-header-row">
-            <span>渠道 / Campaign</span>
-            <span>D1 / D7 留存</span>
-            <span>D30 LTV</span>
-            <span>安装 → 创角</span>
-            <span>创角 → 首付</span>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>日期</span><span>新增账号数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
           </div>
-          <div class="table-data-row">
-            <span>渠道 A · 素材组 1</span>
-            <span>42% / 21%</span>
-            <span>￥26.3</span>
-            <span>68%</span>
-            <span>9.5%</span>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/31</span><span>4,250</span><span>¥0.52</span><span>¥0.85</span><span>¥1.52</span><span>¥1.95</span><span>¥2.35</span><span>¥2.72</span><span>¥3.05</span><span>¥3.35</span><span>¥3.62</span><span>¥3.85</span><span>¥4.05</span><span>¥4.22</span><span>¥4.38</span><span>¥4.52</span><span>¥4.65</span><span>¥4.78</span><span>¥4.90</span><span>¥5.02</span><span>¥5.15</span><span>¥5.28</span><span>¥5.42</span><span>¥5.55</span><span>¥5.68</span><span>¥5.82</span><span>¥5.95</span><span>¥6.08</span><span>¥6.22</span><span>¥6.35</span><span>¥6.48</span><span>¥8.20</span><span>¥15.60</span><span>¥28.50</span><span>¥42.30</span><span>¥52.80</span><span>¥68.50</span><span>¥82.50</span><span>¥89.20</span><span>¥95.20</span>
           </div>
-          <div class="table-data-row">
-            <span>渠道 B · 素材组 2</span>
-            <span>36% / 18%</span>
-            <span>￥19.8</span>
-            <span>54%</span>
-            <span>7.2%</span>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/30</span><span>3,980</span><span>¥0.48</span><span>¥0.78</span><span>¥1.42</span><span>¥1.82</span><span>¥2.20</span><span>¥2.55</span><span>¥2.88</span><span>¥3.18</span><span>¥3.45</span><span>¥3.72</span><span>¥3.95</span><span>¥4.15</span><span>¥4.32</span><span>¥4.48</span><span>¥4.62</span><span>¥4.75</span><span>¥4.88</span><span>¥5.00</span><span>¥5.12</span><span>¥5.25</span><span>¥5.38</span><span>¥5.50</span><span>¥5.62</span><span>¥5.75</span><span>¥5.88</span><span>¥6.00</span><span>¥6.12</span><span>¥6.25</span><span>¥6.38</span><span>¥7.95</span><span>¥14.80</span><span>¥27.20</span><span>¥40.50</span><span>¥50.20</span><span>¥65.80</span><span>¥79.50</span><span>¥85.80</span><span>¥92.10</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/29</span><span>4,120</span><span>¥0.55</span><span>¥0.90</span><span>¥1.60</span><span>¥2.05</span><span>¥2.48</span><span>¥2.88</span><span>¥3.25</span><span>¥3.58</span><span>¥3.88</span><span>¥4.18</span><span>¥4.45</span><span>¥4.70</span><span>¥4.92</span><span>¥5.12</span><span>¥5.30</span><span>¥5.48</span><span>¥5.65</span><span>¥5.82</span><span>¥5.98</span><span>¥6.15</span><span>¥6.32</span><span>¥6.48</span><span>¥6.65</span><span>¥6.82</span><span>¥6.98</span><span>¥7.15</span><span>¥7.32</span><span>¥7.48</span><span>¥7.65</span><span>¥8.35</span><span>¥16.10</span><span>¥29.40</span><span>¥43.80</span><span>¥54.50</span><span>¥70.20</span><span>¥85.20</span><span>¥91.50</span><span>¥98.50</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/28</span><span>4,350</span><span>¥0.58</span><span>¥0.95</span><span>¥1.68</span><span>¥2.15</span><span>¥2.58</span><span>¥3.00</span><span>¥3.38</span><span>¥3.72</span><span>¥4.05</span><span>¥4.35</span><span>¥4.62</span><span>¥4.88</span><span>¥5.12</span><span>¥5.35</span><span>¥5.55</span><span>¥5.75</span><span>¥5.95</span><span>¥6.12</span><span>¥6.30</span><span>¥6.48</span><span>¥6.65</span><span>¥6.82</span><span>¥7.00</span><span>¥7.18</span><span>¥7.35</span><span>¥7.52</span><span>¥7.70</span><span>¥7.88</span><span>¥8.05</span><span>¥8.60</span><span>¥16.50</span><span>¥30.20</span><span>¥45.10</span><span>¥56.20</span><span>¥72.40</span><span>¥87.80</span><span>¥94.50</span><span>¥101.80</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/27</span><span>4,080</span><span>¥0.50</span><span>¥0.82</span><span>¥1.48</span><span>¥1.90</span><span>¥2.28</span><span>¥2.65</span><span>¥2.98</span><span>¥3.28</span><span>¥3.55</span><span>¥3.82</span><span>¥4.05</span><span>¥4.28</span><span>¥4.48</span><span>¥4.68</span><span>¥4.85</span><span>¥5.02</span><span>¥5.18</span><span>¥5.35</span><span>¥5.50</span><span>¥5.65</span><span>¥5.80</span><span>¥5.95</span><span>¥6.10</span><span>¥6.25</span><span>¥6.40</span><span>¥6.55</span><span>¥6.70</span><span>¥6.85</span><span>¥7.00</span><span>¥8.10</span><span>¥15.30</span><span>¥28.10</span><span>¥41.90</span><span>¥52.00</span><span>¥67.50</span><span>¥81.50</span><span>¥87.80</span><span>¥94.30</span>
           </div>
           <div class="table-footnote">
-            待「投放数据」接入数数后，可用 渠道 / Campaign / 素材 等维度，在此表中补全并联动到各漏斗分析。
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应Ltv指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增设备Ltv -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增设备Ltv</div>
+            <div class="card-block-sub">按日期统计新增设备的Ltv表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>日期</span><span>新增设备数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/31</span><span>4,120</span><span>¥0.48</span><span>¥0.78</span><span>¥1.42</span><span>¥1.82</span><span>¥2.20</span><span>¥2.55</span><span>¥2.88</span><span>¥3.18</span><span>¥3.45</span><span>¥3.72</span><span>¥3.95</span><span>¥4.15</span><span>¥4.35</span><span>¥4.52</span><span>¥4.68</span><span>¥4.82</span><span>¥4.95</span><span>¥5.08</span><span>¥5.20</span><span>¥5.32</span><span>¥5.44</span><span>¥5.55</span><span>¥5.66</span><span>¥5.78</span><span>¥5.90</span><span>¥6.02</span><span>¥6.14</span><span>¥6.25</span><span>¥6.38</span><span>¥7.90</span><span>¥14.80</span><span>¥27.20</span><span>¥40.50</span><span>¥50.20</span><span>¥65.30</span><span>¥78.50</span><span>¥84.80</span><span>¥91.20</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/30</span><span>3,890</span><span>¥0.45</span><span>¥0.72</span><span>¥1.35</span><span>¥1.72</span><span>¥2.08</span><span>¥2.42</span><span>¥2.72</span><span>¥3.00</span><span>¥3.25</span><span>¥3.50</span><span>¥3.72</span><span>¥3.92</span><span>¥4.10</span><span>¥4.28</span><span>¥4.45</span><span>¥4.60</span><span>¥4.75</span><span>¥4.88</span><span>¥5.02</span><span>¥5.15</span><span>¥5.28</span><span>¥5.40</span><span>¥5.52</span><span>¥5.65</span><span>¥5.78</span><span>¥5.90</span><span>¥6.02</span><span>¥6.15</span><span>¥6.28</span><span>¥7.65</span><span>¥14.20</span><span>¥26.10</span><span>¥38.90</span><span>¥48.20</span><span>¥62.80</span><span>¥75.50</span><span>¥81.50</span><span>¥87.50</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/29</span><span>3,735</span><span>¥0.52</span><span>¥0.85</span><span>¥1.55</span><span>¥1.98</span><span>¥2.40</span><span>¥2.78</span><span>¥3.15</span><span>¥3.48</span><span>¥3.78</span><span>¥4.08</span><span>¥4.35</span><span>¥4.60</span><span>¥4.82</span><span>¥5.02</span><span>¥5.22</span><span>¥5.40</span><span>¥5.58</span><span>¥5.75</span><span>¥5.92</span><span>¥6.08</span><span>¥6.25</span><span>¥6.40</span><span>¥6.55</span><span>¥6.70</span><span>¥6.85</span><span>¥7.00</span><span>¥7.15</span><span>¥7.30</span><span>¥7.45</span><span>¥8.15</span><span>¥15.40</span><span>¥28.30</span><span>¥42.10</span><span>¥52.50</span><span>¥67.90</span><span>¥82.00</span><span>¥88.50</span><span>¥94.80</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/28</span><span>4,212</span><span>¥0.55</span><span>¥0.90</span><span>¥1.62</span><span>¥2.08</span><span>¥2.50</span><span>¥2.90</span><span>¥3.28</span><span>¥3.62</span><span>¥3.95</span><span>¥4.25</span><span>¥4.52</span><span>¥4.78</span><span>¥5.02</span><span>¥5.25</span><span>¥5.45</span><span>¥5.65</span><span>¥5.85</span><span>¥6.02</span><span>¥6.20</span><span>¥6.38</span><span>¥6.55</span><span>¥6.72</span><span>¥6.90</span><span>¥7.08</span><span>¥7.25</span><span>¥7.42</span><span>¥7.60</span><span>¥7.78</span><span>¥7.95</span><span>¥8.40</span><span>¥16.00</span><span>¥29.50</span><span>¥43.90</span><span>¥54.80</span><span>¥70.80</span><span>¥85.50</span><span>¥92.20</span><span>¥98.50</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/27</span><span>3,978</span><span>¥0.47</span><span>¥0.76</span><span>¥1.40</span><span>¥1.78</span><span>¥2.15</span><span>¥2.50</span><span>¥2.82</span><span>¥3.12</span><span>¥3.38</span><span>¥3.65</span><span>¥3.88</span><span>¥4.10</span><span>¥4.30</span><span>¥4.48</span><span>¥4.65</span><span>¥4.82</span><span>¥4.98</span><span>¥5.12</span><span>¥5.28</span><span>¥5.42</span><span>¥5.55</span><span>¥5.68</span><span>¥5.82</span><span>¥5.95</span><span>¥6.08</span><span>¥6.22</span><span>¥6.35</span><span>¥6.48</span><span>¥6.62</span><span>¥7.75</span><span>¥14.50</span><span>¥26.70</span><span>¥39.80</span><span>¥49.50</span><span>¥64.20</span><span>¥77.50</span><span>¥83.50</span><span>¥89.70</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应Ltv指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增付费用户Ltv -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增付费用户Ltv</div>
+            <div class="card-block-sub">按日期统计新增付费用户的Ltv表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>日期</span><span>新增付费用户数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/31</span><span>285</span><span>¥8.50</span><span>¥12.80</span><span>¥18.50</span><span>¥22.80</span><span>¥26.50</span><span>¥29.80</span><span>¥32.80</span><span>¥35.50</span><span>¥38.00</span><span>¥40.20</span><span>¥42.30</span><span>¥44.20</span><span>¥46.00</span><span>¥47.60</span><span>¥49.20</span><span>¥50.60</span><span>¥52.00</span><span>¥53.30</span><span>¥54.50</span><span>¥55.80</span><span>¥57.00</span><span>¥58.20</span><span>¥59.50</span><span>¥60.80</span><span>¥62.00</span><span>¥63.20</span><span>¥64.50</span><span>¥65.80</span><span>¥67.00</span><span>¥85.60</span><span>¥158.20</span><span>¥285.50</span><span>¥420.30</span><span>¥520.50</span><span>¥680.50</span><span>¥820.50</span><span>¥885.00</span><span>¥952.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/30</span><span>268</span><span>¥8.20</span><span>¥12.30</span><span>¥17.80</span><span>¥22.00</span><span>¥25.50</span><span>¥28.60</span><span>¥31.50</span><span>¥34.20</span><span>¥36.60</span><span>¥38.80</span><span>¥40.80</span><span>¥42.60</span><span>¥44.30</span><span>¥45.80</span><span>¥47.30</span><span>¥48.60</span><span>¥49.90</span><span>¥51.10</span><span>¥52.30</span><span>¥53.50</span><span>¥54.60</span><span>¥55.80</span><span>¥57.00</span><span>¥58.20</span><span>¥59.40</span><span>¥60.50</span><span>¥61.70</span><span>¥62.80</span><span>¥64.00</span><span>¥82.50</span><span>¥152.30</span><span>¥275.20</span><span>¥405.50</span><span>¥502.00</span><span>¥658.00</span><span>¥792.50</span><span>¥856.00</span><span>¥921.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/29</span><span>295</span><span>¥8.80</span><span>¥13.30</span><span>¥19.20</span><span>¥23.80</span><span>¥27.60</span><span>¥31.00</span><span>¥34.20</span><span>¥37.00</span><span>¥39.60</span><span>¥42.00</span><span>¥44.20</span><span>¥46.20</span><span>¥48.00</span><span>¥49.70</span><span>¥51.30</span><span>¥52.80</span><span>¥54.20</span><span>¥55.50</span><span>¥56.80</span><span>¥58.00</span><span>¥59.20</span><span>¥60.40</span><span>¥61.50</span><span>¥62.70</span><span>¥63.90</span><span>¥65.10</span><span>¥66.30</span><span>¥67.50</span><span>¥68.70</span><span>¥88.20</span><span>¥163.10</span><span>¥294.00</span><span>¥438.00</span><span>¥542.50</span><span>¥702.00</span><span>¥847.00</span><span>¥915.00</span><span>¥985.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/28</span><span>312</span><span>¥9.10</span><span>¥13.80</span><span>¥19.90</span><span>¥24.60</span><span>¥28.60</span><span>¥32.20</span><span>¥35.50</span><span>¥38.50</span><span>¥41.20</span><span>¥43.80</span><span>¥46.20</span><span>¥48.30</span><span>¥50.30</span><span>¥52.10</span><span>¥53.80</span><span>¥55.40</span><span>¥56.90</span><span>¥58.30</span><span>¥59.60</span><span>¥60.90</span><span>¥62.20</span><span>¥63.40</span><span>¥64.60</span><span>¥65.80</span><span>¥67.00</span><span>¥68.20</span><span>¥69.40</span><span>¥70.60</span><span>¥71.80</span><span>¥91.50</span><span>¥168.50</span><span>¥302.00</span><span>¥451.00</span><span>¥560.00</span><span>¥724.00</span><span>¥875.00</span><span>¥945.00</span><span>¥1018.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/27</span><span>278</span><span>¥8.35</span><span>¥12.50</span><span>¥18.10</span><span>¥22.40</span><span>¥26.00</span><span>¥29.20</span><span>¥32.20</span><span>¥34.80</span><span>¥37.20</span><span>¥39.40</span><span>¥41.50</span><span>¥43.40</span><span>¥45.10</span><span>¥46.70</span><span>¥48.20</span><span>¥49.60</span><span>¥50.90</span><span>¥52.20</span><span>¥53.40</span><span>¥54.60</span><span>¥55.80</span><span>¥57.00</span><span>¥58.10</span><span>¥59.30</span><span>¥60.50</span><span>¥61.60</span><span>¥62.80</span><span>¥64.00</span><span>¥65.10</span><span>¥84.00</span><span>¥155.30</span><span>¥281.00</span><span>¥419.00</span><span>¥520.00</span><span>¥675.00</span><span>¥812.00</span><span>¥877.00</span><span>¥943.00</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应Ltv指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 首次付费用户Ltv -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">首次付费用户Ltv</div>
+            <div class="card-block-sub">按日期统计首次付费用户的Ltv表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>日期</span><span>首次付费用户数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/31</span><span>198</span><span>¥12.20</span><span>¥18.50</span><span>¥26.80</span><span>¥33.20</span><span>¥38.50</span><span>¥43.20</span><span>¥47.50</span><span>¥51.30</span><span>¥54.80</span><span>¥58.00</span><span>¥61.00</span><span>¥63.80</span><span>¥66.40</span><span>¥68.80</span><span>¥71.00</span><span>¥73.00</span><span>¥74.80</span><span>¥76.50</span><span>¥78.20</span><span>¥79.80</span><span>¥81.30</span><span>¥82.80</span><span>¥84.20</span><span>¥85.50</span><span>¥86.80</span><span>¥88.00</span><span>¥89.20</span><span>¥90.50</span><span>¥91.80</span><span>¥93.00</span><span>¥118.30</span><span>¥218.50</span><span>¥395.20</span><span>¥582.30</span><span>¥720.50</span><span>¥938.50</span><span>¥1132.00</span><span>¥1220.00</span><span>¥1312.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/30</span><span>185</span><span>¥11.80</span><span>¥17.80</span><span>¥25.80</span><span>¥31.90</span><span>¥37.00</span><span>¥41.50</span><span>¥45.60</span><span>¥49.30</span><span>¥52.60</span><span>¥55.60</span><span>¥58.40</span><span>¥61.00</span><span>¥63.40</span><span>¥65.60</span><span>¥67.60</span><span>¥69.50</span><span>¥71.20</span><span>¥72.80</span><span>¥74.40</span><span>¥75.80</span><span>¥77.20</span><span>¥78.50</span><span>¥79.80</span><span>¥81.00</span><span>¥82.20</span><span>¥83.40</span><span>¥84.60</span><span>¥85.80</span><span>¥87.00</span><span>¥88.20</span><span>¥114.00</span><span>¥210.30</span><span>¥380.50</span><span>¥560.20</span><span>¥695.00</span><span>¥905.00</span><span>¥1092.00</span><span>¥1178.00</span><span>¥1268.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/29</span><span>210</span><span>¥12.50</span><span>¥19.00</span><span>¥27.50</span><span>¥34.00</span><span>¥39.50</span><span>¥44.40</span><span>¥48.80</span><span>¥52.80</span><span>¥56.40</span><span>¥59.80</span><span>¥62.90</span><span>¥65.70</span><span>¥68.30</span><span>¥70.70</span><span>¥72.90</span><span>¥75.00</span><span>¥76.90</span><span>¥78.70</span><span>¥80.40</span><span>¥82.00</span><span>¥83.50</span><span>¥85.00</span><span>¥86.40</span><span>¥87.80</span><span>¥89.20</span><span>¥90.50</span><span>¥91.80</span><span>¥93.10</span><span>¥94.50</span><span>¥95.80</span><span>¥122.50</span><span>¥226.00</span><span>¥408.00</span><span>¥605.50</span><span>¥752.00</span><span>¥972.00</span><span>¥1175.00</span><span>¥1268.00</span><span>¥1360.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/28</span><span>225</span><span>¥13.00</span><span>¥19.80</span><span>¥28.60</span><span>¥35.40</span><span>¥41.10</span><span>¥46.20</span><span>¥50.80</span><span>¥55.00</span><span>¥58.80</span><span>¥62.30</span><span>¥65.50</span><span>¥68.50</span><span>¥71.20</span><span>¥73.70</span><span>¥76.00</span><span>¥78.20</span><span>¥80.20</span><span>¥82.00</span><span>¥83.80</span><span>¥85.50</span><span>¥87.10</span><span>¥88.60</span><span>¥90.00</span><span>¥91.40</span><span>¥92.80</span><span>¥94.10</span><span>¥95.40</span><span>¥96.70</span><span>¥98.00</span><span>¥99.30</span><span>¥127.20</span><span>¥235.00</span><span>¥425.50</span><span>¥628.00</span><span>¥780.00</span><span>¥1012.00</span><span>¥1220.00</span><span>¥1318.00</span><span>¥1415.00</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/27</span><span>192</span><span>¥11.90</span><span>¥18.00</span><span>¥26.20</span><span>¥32.40</span><span>¥37.60</span><span>¥42.20</span><span>¥46.40</span><span>¥50.20</span><span>¥53.60</span><span>¥56.80</span><span>¥59.70</span><span>¥62.40</span><span>¥64.90</span><span>¥67.20</span><span>¥69.40</span><span>¥71.40</span><span>¥73.20</span><span>¥75.00</span><span>¥76.60</span><span>¥78.20</span><span>¥79.70</span><span>¥81.20</span><span>¥82.50</span><span>¥83.80</span><span>¥85.10</span><span>¥86.40</span><span>¥87.60</span><span>¥88.90</span><span>¥90.10</span><span>¥91.40</span><span>¥92.60</span><span>¥116.80</span><span>¥215.20</span><span>¥390.00</span><span>¥575.30</span><span>¥715.00</span><span>¥928.00</span><span>¥1118.00</span><span>¥1208.00</span><span>¥1298.00</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应Ltv指标生成此表。
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增角色Ltv -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">新增角色Ltv</div>
+            <div class="card-block-sub">按日期统计新增角色的Ltv表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>日期</span><span>新增角色数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/31</span><span>5,280</span><span>¥0.42</span><span>¥0.68</span><span>¥1.22</span><span>¥1.56</span><span>¥1.88</span><span>¥2.18</span><span>¥2.45</span><span>¥2.70</span><span>¥2.92</span><span>¥3.12</span><span>¥3.30</span><span>¥3.48</span><span>¥3.65</span><span>¥3.80</span><span>¥3.95</span><span>¥4.10</span><span>¥4.25</span><span>¥4.40</span><span>¥4.55</span><span>¥4.70</span><span>¥4.85</span><span>¥5.00</span><span>¥5.15</span><span>¥5.30</span><span>¥5.45</span><span>¥5.60</span><span>¥5.75</span><span>¥5.90</span><span>¥6.05</span><span>¥6.20</span><span>¥6.80</span><span>¥12.90</span><span>¥23.50</span><span>¥35.20</span><span>¥43.50</span><span>¥56.80</span><span>¥68.50</span><span>¥74.00</span><span>¥79.50</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/30</span><span>4,950</span><span>¥0.38</span><span>¥0.62</span><span>¥1.12</span><span>¥1.42</span><span>¥1.72</span><span>¥1.98</span><span>¥2.22</span><span>¥2.45</span><span>¥2.65</span><span>¥2.85</span><span>¥3.02</span><span>¥3.18</span><span>¥3.32</span><span>¥3.46</span><span>¥3.60</span><span>¥3.72</span><span>¥3.85</span><span>¥3.98</span><span>¥4.10</span><span>¥4.22</span><span>¥4.35</span><span>¥4.48</span><span>¥4.60</span><span>¥4.72</span><span>¥4.85</span><span>¥4.98</span><span>¥5.10</span><span>¥5.22</span><span>¥5.35</span><span>¥6.45</span><span>¥12.10</span><span>¥22.20</span><span>¥33.10</span><span>¥41.00</span><span>¥53.50</span><span>¥64.50</span><span>¥69.50</span><span>¥74.80</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/29</span><span>5,150</span><span>¥0.45</span><span>¥0.72</span><span>¥1.30</span><span>¥1.68</span><span>¥2.02</span><span>¥2.35</span><span>¥2.65</span><span>¥2.92</span><span>¥3.18</span><span>¥3.42</span><span>¥3.65</span><span>¥3.85</span><span>¥4.05</span><span>¥4.22</span><span>¥4.40</span><span>¥4.58</span><span>¥4.75</span><span>¥4.92</span><span>¥5.08</span><span>¥5.25</span><span>¥5.42</span><span>¥5.58</span><span>¥5.75</span><span>¥5.92</span><span>¥6.08</span><span>¥6.25</span><span>¥6.42</span><span>¥6.58</span><span>¥6.75</span><span>¥7.05</span><span>¥13.30</span><span>¥24.40</span><span>¥36.50</span><span>¥45.20</span><span>¥58.90</span><span>¥71.00</span><span>¥76.50</span><span>¥82.30</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/28</span><span>5,420</span><span>¥0.48</span><span>¥0.78</span><span>¥1.40</span><span>¥1.80</span><span>¥2.18</span><span>¥2.52</span><span>¥2.85</span><span>¥3.15</span><span>¥3.42</span><span>¥3.68</span><span>¥3.92</span><span>¥4.15</span><span>¥4.38</span><span>¥4.58</span><span>¥4.78</span><span>¥4.98</span><span>¥5.18</span><span>¥5.38</span><span>¥5.58</span><span>¥5.78</span><span>¥5.98</span><span>¥6.18</span><span>¥6.38</span><span>¥6.58</span><span>¥6.78</span><span>¥6.98</span><span>¥7.18</span><span>¥7.38</span><span>¥7.58</span><span>¥7.30</span><span>¥13.80</span><span>¥25.20</span><span>¥37.80</span><span>¥47.00</span><span>¥61.00</span><span>¥73.50</span><span>¥79.50</span><span>¥85.50</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: repeat(41, minmax(60px, 1fr)); min-width: 2460px;">
+            <span>2026/1/27</span><span>5,080</span><span>¥0.40</span><span>¥0.65</span><span>¥1.18</span><span>¥1.50</span><span>¥1.80</span><span>¥2.08</span><span>¥2.35</span><span>¥2.60</span><span>¥2.82</span><span>¥3.02</span><span>¥3.22</span><span>¥3.40</span><span>¥3.58</span><span>¥3.75</span><span>¥3.92</span><span>¥4.08</span><span>¥4.25</span><span>¥4.42</span><span>¥4.58</span><span>¥4.75</span><span>¥4.92</span><span>¥5.08</span><span>¥5.25</span><span>¥5.42</span><span>¥5.58</span><span>¥5.75</span><span>¥5.92</span><span>¥6.08</span><span>¥6.25</span><span>¥6.65</span><span>¥12.50</span><span>¥22.90</span><span>¥34.20</span><span>¥42.20</span><span>¥55.20</span><span>¥66.50</span><span>¥71.80</span><span>¥77.20</span>
+          </div>
+          <div class="table-footnote">
+            在数数中通过：日期 + 服务器 + 终端 等维度，组合相应Ltv指标生成此表。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 8：回流 -->
+    <section class="panel" id="panel-return">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>回流用户分析</span>
+            <span class="panel-title-tag">对应：回流用户留存 / 回流 Ltv / 回流付费</span>
+          </div>
+          <div class="panel-subtitle">
+            分析流失用户回流后的表现，评估召回效果。
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block block-full">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">每日回流用户基础数据</div>
+              <div class="card-block-sub">每日回流用户数、付费情况及收入统计</div>
+            </div>
+          </div>
+          <div class="table-placeholder" style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
+            <div class="table-header-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>日期</span><span>每日回流用户数</span><span>每日付费回流用户数</span><span>总收入</span><span>当日付费账号数</span><span>付费率</span><span>ARPU</span><span>ARPPU</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/31</span><span>1,850</span><span>285</span><span>¥128,500</span><span>285</span><span>15.4%</span><span>¥69.46</span><span>¥450.88</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/30</span><span>1,720</span><span>258</span><span>¥115,200</span><span>258</span><span>15.0%</span><span>¥66.98</span><span>¥446.51</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/29</span><span>1,680</span><span>252</span><span>¥112,800</span><span>252</span><span>15.0%</span><span>¥67.14</span><span>¥447.62</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/28</span><span>1,920</span><span>302</span><span>¥138,600</span><span>302</span><span>15.7%</span><span>¥72.19</span><span>¥458.94</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/27</span><span>1,780</span><span>267</span><span>¥120,200</span><span>267</span><span>15.0%</span><span>¥67.53</span><span>¥450.19</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/26</span><span>1,650</span><span>240</span><span>¥105,600</span><span>240</span><span>14.5%</span><span>¥64.00</span><span>¥440.00</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px 120px 130px 90px 110px 75px 80px 85px; min-width: 790px;">
+              <span>2026/1/25</span><span>1,810</span><span>280</span><span>¥126,000</span><span>280</span><span>15.5%</span><span>¥69.61</span><span>¥450.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 每日回流用户留存数据 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">每日回流用户留存数据</div>
+            <div class="card-block-sub">回流用户在回流后的留存表现</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>日期</span><span>每日回流用户数</span><span>次留</span><span>3留</span><span>4留</span><span>5留</span><span>6留</span><span>7留</span><span>8留</span><span>9留</span><span>10留</span><span>11留</span><span>12留</span><span>13留</span><span>14留</span><span>15留</span><span>16留</span><span>17留</span><span>18留</span><span>19留</span><span>20留</span><span>21留</span><span>22留</span><span>23留</span><span>24留</span><span>25留</span><span>26留</span><span>27留</span><span>28留</span><span>29留</span><span>30留</span><span>45留</span><span>60留</span><span>90留</span><span>120留</span><span>150留</span><span>180留</span><span>240留</span><span>300留</span><span>360留</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/31</span><span>1,850</span><span>58.2%</span><span>45.5%</span><span>40.2%</span><span>36.8%</span><span>33.5%</span><span>31.0%</span><span>28.8%</span><span>26.9%</span><span>25.2%</span><span>23.8%</span><span>22.5%</span><span>21.3%</span><span>20.3%</span><span>19.4%</span><span>18.6%</span><span>17.8%</span><span>17.1%</span><span>16.5%</span><span>15.9%</span><span>15.4%</span><span>14.9%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.1%</span><span>11.7%</span><span>11.4%</span><span>10.5%</span><span>9.2%</span><span>7.8%</span><span>6.5%</span><span>5.5%</span><span>4.6%</span><span>3.8%</span><span>2.8%</span><span>2.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/30</span><span>1,720</span><span>56.8%</span><span>44.2%</span><span>39.0%</span><span>35.6%</span><span>32.4%</span><span>29.9%</span><span>27.8%</span><span>25.9%</span><span>24.2%</span><span>22.8%</span><span>21.5%</span><span>20.4%</span><span>19.4%</span><span>18.5%</span><span>17.7%</span><span>17.0%</span><span>16.3%</span><span>15.7%</span><span>15.2%</span><span>14.7%</span><span>14.2%</span><span>13.7%</span><span>13.3%</span><span>12.9%</span><span>12.5%</span><span>12.1%</span><span>11.8%</span><span>11.4%</span><span>11.1%</span><span>10.2%</span><span>8.9%</span><span>7.6%</span><span>6.3%</span><span>5.3%</span><span>4.4%</span><span>3.6%</span><span>2.7%</span><span>1.9%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/29</span><span>1,680</span><span>55.5%</span><span>43.1%</span><span>38.0%</span><span>34.6%</span><span>31.5%</span><span>29.1%</span><span>27.0%</span><span>25.2%</span><span>23.5%</span><span>22.1%</span><span>20.9%</span><span>19.8%</span><span>18.9%</span><span>18.0%</span><span>17.2%</span><span>16.5%</span><span>15.9%</span><span>15.3%</span><span>14.8%</span><span>14.3%</span><span>13.8%</span><span>13.4%</span><span>13.0%</span><span>12.6%</span><span>12.2%</span><span>11.8%</span><span>11.5%</span><span>11.1%</span><span>10.8%</span><span>9.9%</span><span>8.7%</span><span>7.4%</span><span>6.1%</span><span>5.2%</span><span>4.3%</span><span>3.5%</span><span>2.6%</span><span>1.8%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/28</span><span>1,920</span><span>59.5%</span><span>46.8%</span><span>41.4%</span><span>37.9%</span><span>34.6%</span><span>32.0%</span><span>29.8%</span><span>27.9%</span><span>26.1%</span><span>24.7%</span><span>23.4%</span><span>22.2%</span><span>21.2%</span><span>20.3%</span><span>19.4%</span><span>18.6%</span><span>17.9%</span><span>17.3%</span><span>16.7%</span><span>16.2%</span><span>15.7%</span><span>15.2%</span><span>14.8%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.5%</span><span>12.1%</span><span>11.2%</span><span>9.8%</span><span>8.4%</span><span>7.0%</span><span>5.9%</span><span>5.0%</span><span>4.1%</span><span>3.1%</span><span>2.2%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/27</span><span>1,780</span><span>57.3%</span><span>44.7%</span><span>39.5%</span><span>36.0%</span><span>32.8%</span><span>30.3%</span><span>28.2%</span><span>26.3%</span><span>24.6%</span><span>23.2%</span><span>21.9%</span><span>20.8%</span><span>19.9%</span><span>19.0%</span><span>18.2%</span><span>17.4%</span><span>16.8%</span><span>16.2%</span><span>15.6%</span><span>15.1%</span><span>14.6%</span><span>14.2%</span><span>13.8%</span><span>13.4%</span><span>13.0%</span><span>12.6%</span><span>12.2%</span><span>11.8%</span><span>11.5%</span><span>10.6%</span><span>9.3%</span><span>7.9%</span><span>6.6%</span><span>5.6%</span><span>4.7%</span><span>3.8%</span><span>2.9%</span><span>2.0%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/26</span><span>1,650</span><span>54.8%</span><span>42.5%</span><span>37.4%</span><span>34.1%</span><span>31.0%</span><span>28.6%</span><span>26.6%</span><span>24.8%</span><span>23.2%</span><span>21.9%</span><span>20.7%</span><span>19.6%</span><span>18.7%</span><span>17.8%</span><span>17.0%</span><span>16.3%</span><span>15.7%</span><span>15.1%</span><span>14.6%</span><span>14.1%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.6%</span><span>11.2%</span><span>10.9%</span><span>10.5%</span><span>9.7%</span><span>8.5%</span><span>7.2%</span><span>6.0%</span><span>5.1%</span><span>4.2%</span><span>3.4%</span><span>2.5%</span><span>1.7%</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 100px 50px repeat(28, 50px) repeat(10, 58px); min-width: 2920px;">
+            <span>2026/1/25</span><span>1,810</span><span>58.0%</span><span>45.3%</span><span>40.0%</span><span>36.5%</span><span>33.2%</span><span>30.7%</span><span>28.5%</span><span>26.6%</span><span>24.9%</span><span>23.5%</span><span>22.2%</span><span>21.1%</span><span>20.1%</span><span>19.2%</span><span>18.4%</span><span>17.6%</span><span>17.0%</span><span>16.4%</span><span>15.8%</span><span>15.3%</span><span>14.8%</span><span>14.4%</span><span>14.0%</span><span>13.6%</span><span>13.2%</span><span>12.8%</span><span>12.4%</span><span>12.0%</span><span>11.7%</span><span>10.8%</span><span>9.5%</span><span>8.1%</span><span>6.7%</span><span>5.7%</span><span>4.8%</span><span>3.9%</span><span>2.9%</span><span>2.1%</span>
+          </div>
+        </div>
+      </div>
+      <!-- 每日回流用户Ltv数据 -->
+      <div class="card-block block-full" style="margin-top: 12px;">
+        <div class="card-block-header">
+          <div>
+            <div class="card-block-title">每日回流用户Ltv数据</div>
+            <div class="card-block-sub">回流用户的生命周期价值统计</div>
+          </div>
+        </div>
+        <div class="table-placeholder" style="overflow-x: auto;">
+          <div class="table-header-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>日期</span><span>每日回流用户数</span><span>Ltv1</span><span>Ltv2</span><span>Ltv3</span><span>Ltv4</span><span>Ltv5</span><span>Ltv6</span><span>Ltv7</span><span>Ltv8</span><span>Ltv9</span><span>Ltv10</span><span>Ltv11</span><span>Ltv12</span><span>Ltv13</span><span>Ltv14</span><span>Ltv15</span><span>Ltv16</span><span>Ltv17</span><span>Ltv18</span><span>Ltv19</span><span>Ltv20</span><span>Ltv21</span><span>Ltv22</span><span>Ltv23</span><span>Ltv24</span><span>Ltv25</span><span>Ltv26</span><span>Ltv27</span><span>Ltv28</span><span>Ltv29</span><span>Ltv30</span><span>Ltv45</span><span>Ltv60</span><span>Ltv90</span><span>Ltv120</span><span>Ltv150</span><span>Ltv180</span><span>Ltv240</span><span>Ltv300</span><span>Ltv360</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/31</span><span>1,850</span><span>¥42.5</span><span>¥68.2</span><span>¥85.6</span><span>¥98.4</span><span>¥108.5</span><span>¥116.2</span><span>¥122.5</span><span>¥127.8</span><span>¥132.2</span><span>¥136.0</span><span>¥139.4</span><span>¥142.3</span><span>¥144.9</span><span>¥147.3</span><span>¥149.5</span><span>¥151.5</span><span>¥153.3</span><span>¥154.9</span><span>¥156.4</span><span>¥157.8</span><span>¥159.1</span><span>¥160.3</span><span>¥161.4</span><span>¥162.4</span><span>¥163.3</span><span>¥164.2</span><span>¥165.0</span><span>¥165.8</span><span>¥166.5</span><span>¥172.5</span><span>¥176.8</span><span>¥182.5</span><span>¥186.8</span><span>¥190.2</span><span>¥193.0</span><span>¥197.5</span><span>¥201.2</span><span>¥205.0</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/30</span><span>1,720</span><span>¥41.8</span><span>¥66.9</span><span>¥83.8</span><span>¥96.2</span><span>¥106.0</span><span>¥113.4</span><span>¥119.5</span><span>¥124.5</span><span>¥128.7</span><span>¥132.3</span><span>¥135.5</span><span>¥138.3</span><span>¥140.8</span><span>¥143.1</span><span>¥145.2</span><span>¥147.1</span><span>¥148.8</span><span>¥150.4</span><span>¥151.8</span><span>¥153.1</span><span>¥154.3</span><span>¥155.4</span><span>¥156.5</span><span>¥157.4</span><span>¥158.3</span><span>¥159.1</span><span>¥159.9</span><span>¥160.6</span><span>¥161.3</span><span>¥166.8</span><span>¥170.8</span><span>¥176.1</span><span>¥180.1</span><span>¥183.2</span><span>¥185.8</span><span>¥190.0</span><span>¥193.4</span><span>¥196.9</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/29</span><span>1,680</span><span>¥40.5</span><span>¥64.8</span><span>¥81.2</span><span>¥93.2</span><span>¥102.5</span><span>¥109.5</span><span>¥115.2</span><span>¥120.0</span><span>¥123.9</span><span>¥127.3</span><span>¥130.3</span><span>¥132.9</span><span>¥135.2</span><span>¥137.3</span><span>¥139.2</span><span>¥140.9</span><span>¥142.5</span><span>¥143.9</span><span>¥145.2</span><span>¥146.4</span><span>¥147.5</span><span>¥148.5</span><span>¥149.5</span><span>¥150.4</span><span>¥151.2</span><span>¥152.0</span><span>¥152.7</span><span>¥153.3</span><span>¥153.9</span><span>¥159.0</span><span>¥162.7</span><span>¥167.6</span><span>¥171.3</span><span>¥174.1</span><span>¥176.5</span><span>¥180.4</span><span>¥183.5</span><span>¥186.8</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/28</span><span>1,920</span><span>¥44.2</span><span>¥71.0</span><span>¥89.2</span><span>¥102.6</span><span>¥113.4</span><span>¥121.8</span><span>¥128.8</span><span>¥134.6</span><span>¥139.5</span><span>¥143.8</span><span>¥147.5</span><span>¥150.8</span><span>¥153.7</span><span>¥156.3</span><span>¥158.6</span><span>¥160.7</span><span>¥162.6</span><span>¥164.3</span><span>¥165.9</span><span>¥167.3</span><span>¥168.6</span><span>¥169.8</span><span>¥171.0</span><span>¥172.0</span><span>¥173.0</span><span>¥173.9</span><span>¥174.8</span><span>¥175.6</span><span>¥176.4</span><span>¥182.8</span><span>¥187.6</span><span>¥193.8</span><span>¥198.6</span><span>¥202.4</span><span>¥205.6</span><span>¥210.6</span><span>¥214.8</span><span>¥219.0</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/27</span><span>1,780</span><span>¥42.0</span><span>¥67.2</span><span>¥84.3</span><span>¥96.8</span><span>¥106.8</span><span>¥114.4</span><span>¥120.6</span><span>¥125.7</span><span>¥130.0</span><span>¥133.7</span><span>¥136.9</span><span>¥139.7</span><span>¥142.2</span><span>¥144.5</span><span>¥146.6</span><span>¥148.5</span><span>¥150.2</span><span>¥151.8</span><span>¥153.2</span><span>¥154.5</span><span>¥155.7</span><span>¥156.8</span><span>¥157.9</span><span>¥158.9</span><span>¥159.8</span><span>¥160.7</span><span>¥161.5</span><span>¥162.3</span><span>¥163.0</span><span>¥168.5</span><span>¥172.5</span><span>¥177.8</span><span>¥181.8</span><span>¥185.0</span><span>¥187.7</span><span>¥192.0</span><span>¥195.5</span><span>¥198.8</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/26</span><span>1,650</span><span>¥39.5</span><span>¥63.1</span><span>¥79.0</span><span>¥90.6</span><span>¥99.8</span><span>¥106.8</span><span>¥112.5</span><span>¥117.2</span><span>¥121.2</span><span>¥124.6</span><span>¥127.5</span><span>¥130.1</span><span>¥132.4</span><span>¥134.5</span><span>¥136.4</span><span>¥138.1</span><span>¥139.7</span><span>¥141.2</span><span>¥142.5</span><span>¥143.7</span><span>¥144.9</span><span>¥145.9</span><span>¥146.9</span><span>¥147.8</span><span>¥148.7</span><span>¥149.5</span><span>¥150.3</span><span>¥151.0</span><span>¥151.7</span><span>¥156.8</span><span>¥160.5</span><span>¥165.2</span><span>¥168.8</span><span>¥171.7</span><span>¥174.2</span><span>¥178.1</span><span>¥181.2</span><span>¥184.2</span>
+          </div>
+          <div class="table-data-row" style="grid-template-columns: 90px 110px repeat(39, 52px); min-width: 2170px;">
+            <span>2026/1/25</span><span>1,810</span><span>¥43.2</span><span>¥69.3</span><span>¥87.1</span><span>¥100.2</span><span>¥110.6</span><span>¥118.6</span><span>¥125.1</span><span>¥130.5</span><span>¥135.0</span><span>¥138.9</span><span>¥142.3</span><span>¥145.2</span><span>¥147.8</span><span>¥150.2</span><span>¥152.3</span><span>¥154.3</span><span>¥156.0</span><span>¥157.6</span><span>¥159.1</span><span>¥160.4</span><span>¥161.7</span><span>¥162.8</span><span>¥163.9</span><span>¥164.9</span><span>¥165.9</span><span>¥166.8</span><span>¥167.6</span><span>¥168.4</span><span>¥169.1</span><span>¥174.8</span><span>¥179.0</span><span>¥184.6</span><span>¥188.8</span><span>¥192.0</span><span>¥194.7</span><span>¥199.0</span><span>¥202.5</span><span>¥205.8</span>
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block block-full" style="margin-top: 12px;">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">多日回流用户Ltv数据</div>
+              <div class="card-block-sub">不同回流周期用户的Ltv对比分析</div>
+            </div>
+          </div>
+          <div class="table-placeholder" style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
+            <div class="table-header-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>日期</span><span>1日回流用户数</span><span>3日回流用户数</span><span>7日回流用户数</span><span>14日回流用户数</span><span>30日回流用户数</span><span>1日付费回流用户数</span><span>3日付费回流用户数</span><span>7日付费回流用户数</span><span>14日付费回流用户数</span><span>30日付费回流用户数</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/31</span><span>1,850</span><span>1,420</span><span>980</span><span>620</span><span>380</span><span>285</span><span>218</span><span>152</span><span>98</span><span>62</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/30</span><span>1,720</span><span>1,320</span><span>910</span><span>575</span><span>352</span><span>258</span><span>198</span><span>138</span><span>89</span><span>56</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/29</span><span>1,680</span><span>1,290</span><span>890</span><span>562</span><span>345</span><span>252</span><span>193</span><span>135</span><span>87</span><span>55</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/28</span><span>1,920</span><span>1,475</span><span>1,018</span><span>644</span><span>395</span><span>302</span><span>232</span><span>162</span><span>105</span><span>66</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/27</span><span>1,780</span><span>1,368</span><span>944</span><span>597</span><span>366</span><span>267</span><span>205</span><span>143</span><span>92</span><span>58</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/26</span><span>1,650</span><span>1,268</span><span>875</span><span>553</span><span>339</span><span>240</span><span>184</span><span>129</span><span>83</span><span>52</span>
+            </div>
+            <div class="table-data-row" style="grid-template-columns: 90px repeat(5, 110px) repeat(5, 130px); min-width: 1090px;">
+              <span>2026/1/25</span><span>1,810</span><span>1,390</span><span>960</span><span>607</span><span>372</span><span>280</span><span>215</span><span>150</span><span>97</span><span>61</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 9：付费数据-充值 -->
+    <section class="panel" id="panel-pay-recharge">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>付费数据 - 充值</span>
+            <span class="panel-title-tag">对应：付费整体 / 商品 / 首充 / 广告收入</span>
+          </div>
+          <div class="panel-subtitle">
+            分析用户充值行为，包括整体付费率、ARPU、ARPPU、各类商品销售等。
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">充值核心指标</div>
+              <div class="card-block-sub">付费率 / ARPU / ARPPU 等</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">KPI 卡片</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：展示付费率、ARPU、ARPPU、付费人数等核心指标。
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">商品销售分布</div>
+              <div class="card-block-sub">各商品类型的销售占比</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">饼图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各商品（钻石/月卡/礼包等）的销售金额占比。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 10：付费数据-消耗 -->
+    <section class="panel" id="panel-pay-consume">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>付费数据 - 消耗</span>
+            <span class="panel-title-tag">对应：钻石消耗 / 体力消耗 / 道具消耗</span>
+          </div>
+          <div class="panel-subtitle">
+            分析用户在游戏内的消耗行为，了解货币和道具的使用情况。
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">钻石消耗分布</div>
+              <div class="card-block-sub">钻石在各系统/玩法的消耗情况</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">条形图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：钻石在抽卡/道具/体力等消耗分布。
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">体力消耗趋势</div>
+              <div class="card-block-sub">体力消耗的时间趋势</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">折线图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：体力消耗随时间变化趋势。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 12：投放数据 -->
+    <section class="panel" id="panel-advertising">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>投放数据</span>
+            <span class="panel-title-tag">对应：各投放渠道支出、新增、ROI等数据</span>
+          </div>
+          <div class="panel-subtitle">
+            分析各投放渠道的支出、新增用户和ROI表现，优化投放策略。
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道支出趋势</div>
+              <div class="card-block-sub">各投放渠道每日/周/月支出</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">折线图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各渠道支出随时间变化趋势
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道新增用户</div>
+              <div class="card-block-sub">各投放渠道带来的新增用户数</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">柱状图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各渠道新增用户数对比
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道ROI</div>
+              <div class="card-block-sub">各投放渠道投资回报率</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">折线图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各渠道ROI随时间变化趋势
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道转化漏斗</div>
+              <div class="card-block-sub">投放到创角的转化分析</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">漏斗图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：投放曝光→点击→下载→激活→创角转化漏斗
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道付费分析</div>
+              <div class="card-block-sub">各渠道付费用户和收入</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">表格</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：渠道付费率、ARPU、LTV数据
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">渠道留存对比</div>
+              <div class="card-block-sub">各渠道用户留存表现</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">热力图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各渠道次日/7日/30日留存对比
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面板 11：付费数据 -->
+    <section class="panel" id="panel-pay">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>付费数据</span>
+            <span class="panel-title-tag">对应：付费整体 / 商品 / 首充 / 消耗</span>
+          </div>
+          <div class="panel-subtitle">
+            分析用户付费行为，包括整体付费情况、商品购买、首充转化和消耗分析。
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">付费整体数据</div>
+              <div class="card-block-sub">整体付费用户数和收入</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">折线图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：付费用户数 / 付费率 / ARPU 趋势
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">商品购买分析</div>
+              <div class="card-block-sub">各商品购买量和收入</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">柱状图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：各商品购买量和收入对比
+          </div>
+        </div>
+      </div>
+      <div class="block-row">
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">首充转化</div>
+              <div class="card-block-sub">首充用户转化率和留存</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">漏斗图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：首充转化漏斗
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-header">
+            <div>
+              <div class="card-block-title">消耗分析</div>
+              <div class="card-block-sub">钻石/体力/道具消耗情况</div>
+            </div>
+            <div class="card-block-tags">
+              <span class="tag tag-primary">饼图</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            图表占位：消耗分布
           </div>
         </div>
       </div>
@@ -1563,14 +2561,35 @@
 </div>
 
 <script>
+  // 设置结束日期为今天
+  function setEndDateToToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const endDateInput = document.getElementById('endDateInput');
+    if (endDateInput) {
+      endDateInput.value = `${year}-${month}-${day}`;
+    }
+  }
+
+  // 页面加载时设置结束日期
+  document.addEventListener('DOMContentLoaded', setEndDateToToday);
+
   // 左侧导航切换
   const sidebarItems = document.querySelectorAll('.sidebar-item');
   const panels = {
     realtime: document.getElementById('panel-realtime'),
     period: document.getElementById('panel-period'),
+    'period-weekly': document.getElementById('panel-period-weekly'),
+    'period-monthly': document.getElementById('panel-period-monthly'),
     retention: document.getElementById('panel-retention'),
-    pay: document.getElementById('panel-pay'),
-    funnel: document.getElementById('panel-funnel')
+    funnel: document.getElementById('panel-funnel'),
+    ltv: document.getElementById('panel-ltv'),
+    return: document.getElementById('panel-return'),
+    'pay-recharge': document.getElementById('panel-pay-recharge'),
+    'pay-consume': document.getElementById('panel-pay-consume'),
+    advertising: document.getElementById('panel-advertising')
   };
 
   sidebarItems.forEach(item => {
@@ -1587,15 +2606,6 @@
     });
   });
 
-  // 周报 / 月报 Tab（仅视觉）
-  const periodTabs = document.querySelectorAll('#periodTabs .mini-tab');
-  periodTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      periodTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-    });
-  });
-
   // 留存口径 Tab（账号 / 设备 / 角色）
   const retentionDimTabs = document.querySelectorAll('#retentionDimTabs .mini-tab');
   retentionDimTabs.forEach(tab => {
@@ -1607,4 +2617,3 @@
 </script>
 </body>
 </html>
-
